@@ -87,7 +87,14 @@ fun timeForHalfWay(
     t1: Double, v1: Double,
     t2: Double, v2: Double,
     t3: Double, v3: Double
-): Double = TODO()
+): Double {
+    val path = (t1 * v1 + t2 * v2 + t3 * v3) / 2
+    return when {
+        path <= t1 * v1           -> path / v1
+        path <= t1 * v1 + t2 * v2 -> t1 + (path - t1 * v1) / v2
+        else                      -> t1 + t2 + (path - t1 * v1 - t2 * v2) / v3
+    }
+}
 
 /**
  * Простая (2 балла)
@@ -102,7 +109,14 @@ fun whichRookThreatens(
     kingX: Int, kingY: Int,
     rookX1: Int, rookY1: Int,
     rookX2: Int, rookY2: Int
-): Int = TODO()
+): Int {
+    return when {
+        (kingX == rookX1 && kingY == rookY2) || (kingX == rookX2 && kingY == rookY1) -> 3
+        kingX == rookX1 || kingY == rookY1 -> 1
+        kingY == rookY2 || kingX == rookX2 -> 2
+        else -> 0
+    }
+}
 
 /**
  * Простая (2 балла)
@@ -118,7 +132,14 @@ fun rookOrBishopThreatens(
     kingX: Int, kingY: Int,
     rookX: Int, rookY: Int,
     bishopX: Int, bishopY: Int
-): Int = TODO()
+): Int {
+    return when {
+        (kingX == rookX || kingY == rookY) && (kotlin.math.abs(bishopX - kingX) == kotlin.math.abs(bishopY - kingY)) -> 3
+        kingX == rookX || kingY == rookY -> 1
+        kotlin.math.abs(bishopX - kingX) == kotlin.math.abs(bishopY - kingY) -> 2
+        else -> 0
+    }
+}
 
 /**
  * Простая (2 балла)
@@ -128,7 +149,16 @@ fun rookOrBishopThreatens(
  * прямоугольным (вернуть 1) или тупоугольным (вернуть 2).
  * Если такой треугольник не существует, вернуть -1.
  */
-fun triangleKind(a: Double, b: Double, c: Double): Int = TODO()
+fun triangleKind(a: Double, b: Double, c: Double): Int {
+    val longest = when {
+        a > b && a > c -> a
+        b > c && b > a -> b
+        else -> c
+    }
+    return when {
+
+    }
+}
 
 /**
  * Средняя (3 балла)
