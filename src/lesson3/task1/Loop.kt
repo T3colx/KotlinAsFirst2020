@@ -2,6 +2,7 @@
 
 package lesson3.task1
 
+import kotlin.math.pow
 import kotlin.math.sqrt
 
 // Урок 3: циклы
@@ -72,7 +73,15 @@ fun digitCountInNumber(n: Int, m: Int): Int =
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun digitNumber(n: Int): Int = TODO()
+fun digitNumber(n: Int): Int {
+    var count = 1
+    var number = n
+    while (number >= 10) {
+        number /= 10
+        count += 1
+    }
+    return count
+}
 
 /**
  * Простая (2 балла)
@@ -80,21 +89,48 @@ fun digitNumber(n: Int): Int = TODO()
  * Найти число Фибоначчи из ряда 1, 1, 2, 3, 5, 8, 13, 21, ... с номером n.
  * Ряд Фибоначчи определён следующим образом: fib(1) = 1, fib(2) = 1, fib(n+2) = fib(n) + fib(n+1)
  */
-fun fib(n: Int): Int = TODO()
+fun fib(n: Int): Int {
+    var firstInOrder = 1
+    var secondInOrder = 1
+    var tmp: Int
+    var count = 3
+    while (count <= n) {
+        tmp = firstInOrder
+        firstInOrder = secondInOrder
+        secondInOrder += tmp
+        count += 1
+    }
+    return secondInOrder
+}
+
 
 /**
  * Простая (2 балла)
  *
  * Для заданного числа n > 1 найти минимальный делитель, превышающий 1
  */
-fun minDivisor(n: Int): Int = TODO()
+fun minDivisor(n: Int): Int {
+    var count = 2
+    while (n % count != 0 && count <= sqrt(n.toDouble())) {
+        count += 1
+    }
+    return if (count <= sqrt(n.toDouble())) count
+    else n
+}
 
 /**
  * Простая (2 балла)
  *
  * Для заданного числа n > 1 найти максимальный делитель, меньший n
  */
-fun maxDivisor(n: Int): Int = TODO()
+fun maxDivisor(n: Int): Int {
+    var count = n - 1
+    while (n % count != 0 && count >= sqrt(n.toDouble())) {
+        count -= 1
+    }
+    return if (count >= sqrt(n.toDouble())) count
+    else 1
+}
 
 /**
  * Простая (2 балла)
@@ -201,7 +237,28 @@ fun cos(x: Double, eps: Double): Double = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun squareSequenceDigit(n: Int): Int = TODO()
+fun squareSequenceDigit(n: Int): Int {
+    var digit = 2
+    var pseudoString: Long = 1
+    var pseudoStringDigitCount = 1
+    while (pseudoStringDigitCount < n) {
+        pseudoString *= 10.0.pow(digitNumber(digit * digit)).toInt()
+        pseudoString += digit * digit
+        pseudoStringDigitCount += digitNumber(digit * digit)
+        digit += 1
+        println(pseudoString)
+    }
+    println("#############")
+    val d = (10.0.pow(pseudoStringDigitCount - n + 1).toInt())
+    val t = (10.0.pow(pseudoStringDigitCount - n)).toInt()
+    val r = pseudoString % (10.0.pow(pseudoStringDigitCount - n + 1).toInt())
+    val f = r / (10.0.pow(pseudoStringDigitCount - n)).toInt()
+    println(d)
+    println(t)
+    println(r)
+    println(f)
+    return f.toInt()
+}
 
 /**
  * Сложная (5 баллов)

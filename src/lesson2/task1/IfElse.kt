@@ -3,6 +3,7 @@
 package lesson2.task1
 
 import lesson1.task1.discriminant
+import lesson1.task1.sqr
 import kotlin.math.max
 import kotlin.math.sqrt
 
@@ -10,6 +11,7 @@ import kotlin.math.sqrt
 // Максимальное количество баллов = 6
 // Рекомендуемое количество баллов = 5
 // Вместе с предыдущими уроками = 9/12
+
 
 /**
  * Пример
@@ -74,7 +76,7 @@ fun ageDescription(age: Int): String =
         age % 10 == 1 -> "$age год"
         age % 10 == 2 || age % 10 == 3 || age % 10 == 4 -> "$age года"
         else -> "$age лет"
-}
+    }
 
 /**
  * Простая (2 балла)
@@ -90,9 +92,9 @@ fun timeForHalfWay(
 ): Double {
     val path = (t1 * v1 + t2 * v2 + t3 * v3) / 2
     return when {
-        path <= t1 * v1           -> path / v1
+        path <= t1 * v1 -> path / v1
         path <= t1 * v1 + t2 * v2 -> t1 + (path - t1 * v1) / v2
-        else                      -> t1 + t2 + (path - t1 * v1 - t2 * v2) / v3
+        else -> t1 + t2 + (path - t1 * v1 - t2 * v2) / v3
     }
 }
 
@@ -150,13 +152,47 @@ fun rookOrBishopThreatens(
  * Если такой треугольник не существует, вернуть -1.
  */
 fun triangleKind(a: Double, b: Double, c: Double): Int {
-    val longest = when {
-        a > b && a > c -> a
-        b > c && b > a -> b
-        else -> c
+    val maxSide: Double
+    val averageSide: Double
+    val minSide: Double
+    if (a + b <= c || a + c <= b || b + c <= a) return -1
+
+    if (a > b) {
+        if (a > c) {
+            maxSide = a
+            if (b > c) {
+                averageSide = b
+                minSide = c
+            } else {
+                averageSide = c
+                minSide = b
+            }
+        } else {
+            maxSide = c
+            averageSide = a
+            minSide = b
+        }
+    } else {
+        if (b > c) {
+            if (a > c) {
+                maxSide = b
+                averageSide = a
+                minSide = c
+            } else {
+                maxSide = b
+                averageSide = c
+                minSide = a
+            }
+        } else {
+            maxSide = c
+            averageSide = b
+            minSide = a
+        }
     }
     return when {
-
+        sqr(maxSide) == sqr(averageSide) + sqr(minSide) -> 1
+        sqr(maxSide) < sqr(averageSide) + sqr(minSide) -> 0
+        else -> 2
     }
 }
 
@@ -168,4 +204,12 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
  * Найти длину пересечения отрезков AB и CD.
  * Если пересечения нет, вернуть -1.
  */
-fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int = TODO()
+fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
+    return when{
+        c >= a && d <= b -> d - c
+        a >= c && b <= d -> b - a
+        c in a..b -> b - c
+        d in a..b -> d - a
+        else -> -1
+    }
+}
