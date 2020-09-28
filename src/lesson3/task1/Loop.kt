@@ -239,25 +239,14 @@ fun cos(x: Double, eps: Double): Double = TODO()
  */
 fun squareSequenceDigit(n: Int): Int {
     var digit = 2
-    var pseudoString: Long = 1
+    var pseudoStringLastDigits = 1
     var pseudoStringDigitCount = 1
     while (pseudoStringDigitCount < n) {
-        pseudoString *= 10.0.pow(digitNumber(digit * digit)).toInt()
-        pseudoString += digit * digit
+        pseudoStringLastDigits = digit * digit
         pseudoStringDigitCount += digitNumber(digit * digit)
         digit += 1
-        println(pseudoString)
     }
-    println("#############")
-    val d = (10.0.pow(pseudoStringDigitCount - n + 1).toInt())
-    val t = (10.0.pow(pseudoStringDigitCount - n)).toInt()
-    val r = pseudoString % (10.0.pow(pseudoStringDigitCount - n + 1).toInt())
-    val f = r / (10.0.pow(pseudoStringDigitCount - n)).toInt()
-    println(d)
-    println(t)
-    println(r)
-    println(f)
-    return f.toInt()
+    return pseudoStringLastDigits % (10.0.pow(pseudoStringDigitCount - n + 1).toInt()) / (10.0.pow(pseudoStringDigitCount - n)).toInt()
 }
 
 /**
@@ -269,4 +258,16 @@ fun squareSequenceDigit(n: Int): Int {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun fibSequenceDigit(n: Int): Int = TODO()
+fun fibSequenceDigit(n: Int): Int {
+    var digit = 2
+    var pseudoStringLastDigits = 1
+    var pseudoStringDigitCount = 1
+    var fibResult: Int
+    while (pseudoStringDigitCount < n) {
+        fibResult = fib(digit)
+        pseudoStringLastDigits = fibResult
+        pseudoStringDigitCount += digitNumber(fibResult)
+        digit += 1
+    }
+    return pseudoStringLastDigits % (10.0.pow(pseudoStringDigitCount - n + 1).toInt()) / (10.0.pow(pseudoStringDigitCount - n)).toInt()
+}
