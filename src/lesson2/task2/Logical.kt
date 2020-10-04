@@ -3,6 +3,7 @@
 package lesson2.task2
 
 import lesson1.task1.sqr
+import kotlin.math.abs
 import kotlin.math.sqrt
 
 /**
@@ -31,7 +32,7 @@ fun isNumberHappy(number: Int): Boolean =
  * Считать, что ферзи не могут загораживать друг друга.
  */
 fun queenThreatens(x1: Int, y1: Int, x2: Int, y2: Int): Boolean =
-    x1 == x2 || y1 == y2 || kotlin.math.abs(x1 - x2) == kotlin.math.abs(y1 - y2)
+    x1 == x2 || y1 == y2 || abs(x1 - x2) == abs(y1 - y2)
 
 
 /**
@@ -40,14 +41,13 @@ fun queenThreatens(x1: Int, y1: Int, x2: Int, y2: Int): Boolean =
  * Дан номер месяца (от 1 до 12 включительно) и год (положительный).
  * Вернуть число дней в этом месяце этого года по григорианскому календарю.
  */
-fun daysInMonth(month: Int, year: Int): Int {
-    return when {
-        month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 10 || month == 12 -> 31
-        month == 4 || month == 6 || month == 9 || month == 11 -> 30
-        month == 2 && (year % 400 == 0 || year % 4 == 0 && year % 100 != 0) -> 29
-        else -> 28
-    }
+fun daysInMonth(month: Int, year: Int): Int = when {
+    (month % 2 != 0 && month < 8) || (month % 2 == 0 && month >= 8) -> 31
+    month == 4 || month == 6 || month == 9 || month == 11 -> 30
+    month == 2 && (year % 400 == 0 || year % 4 == 0 && year % 100 != 0) -> 29
+    else -> 28
 }
+
 
 /**
  * Простая (2 балла)
@@ -72,36 +72,18 @@ fun circleInside(
  * Вернуть true, если кирпич пройдёт
  */
 fun brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int): Boolean {
-    val averageSide: Int
-    val minSide: Int
-    if (a > b) {
-        if (a > c) {
-            if (b > c) {
-                averageSide = b
-                minSide = c
-            } else {
-                averageSide = c
-                minSide = b
-            }
-        } else {
-            averageSide = a
-            minSide = b
-        }
+    val averageSide1: Int
+    val averageSide2: Int
+    val maxSide = maxOf(a, b, c)
+
+    if (a < maxSide) {
+        averageSide1 = a
+        averageSide2 = if (b < maxSide) b else c
     } else {
-        if (b > c) {
-            if (a > c) {
-                averageSide = a
-                minSide = c
-            } else {
-                averageSide = c
-                minSide = a
-            }
-        } else {
-            averageSide = b
-            minSide = a
-        }
+        averageSide1 = b
+        averageSide2 = c
     }
-    return if (r > s && averageSide <= r && minSide <= s) true
-    else averageSide <= s && minSide <= r
+
+    return (averageSide1 <= r && averageSide2 <= s) || (averageSide1 <= s && averageSide2 <= r)
 }
 

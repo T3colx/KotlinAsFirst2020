@@ -4,6 +4,7 @@ package lesson2.task1
 
 import lesson1.task1.discriminant
 import lesson1.task1.sqr
+import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.sqrt
 
@@ -111,14 +112,13 @@ fun whichRookThreatens(
     kingX: Int, kingY: Int,
     rookX1: Int, rookY1: Int,
     rookX2: Int, rookY2: Int
-): Int {
-    return when {
-        (kingX == rookX1 && kingY == rookY2) || (kingX == rookX2 && kingY == rookY1) -> 3
-        kingX == rookX1 || kingY == rookY1 -> 1
-        kingY == rookY2 || kingX == rookX2 -> 2
-        else -> 0
-    }
+): Int = when {
+    (kingX == rookX1 && kingY == rookY2) || (kingX == rookX2 && kingY == rookY1) -> 3
+    kingX == rookX1 || kingY == rookY1 -> 1
+    kingY == rookY2 || kingX == rookX2 -> 2
+    else -> 0
 }
+
 
 /**
  * Простая (2 балла)
@@ -134,14 +134,13 @@ fun rookOrBishopThreatens(
     kingX: Int, kingY: Int,
     rookX: Int, rookY: Int,
     bishopX: Int, bishopY: Int
-): Int {
-    return when {
-        (kingX == rookX || kingY == rookY) && (kotlin.math.abs(bishopX - kingX) == kotlin.math.abs(bishopY - kingY)) -> 3
-        kingX == rookX || kingY == rookY -> 1
-        kotlin.math.abs(bishopX - kingX) == kotlin.math.abs(bishopY - kingY) -> 2
-        else -> 0
-    }
+): Int = when {
+    (kingX == rookX || kingY == rookY) && (abs(bishopX - kingX) == abs(bishopY - kingY)) -> 3
+    kingX == rookX || kingY == rookY -> 1
+    abs(bishopX - kingX) == abs(bishopY - kingY) -> 2
+    else -> 0
 }
+
 
 /**
  * Простая (2 балла)
@@ -155,18 +154,15 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
     val maxSide: Double
     val averageSide: Double
     val minSide: Double
+
+
     if (a + b <= c || a + c <= b || b + c <= a) return -1
 
     if (a > b) {
         if (a > c) {
             maxSide = a
-            if (b > c) {
-                averageSide = b
-                minSide = c
-            } else {
-                averageSide = c
-                minSide = b
-            }
+            averageSide = b
+            minSide = c
         } else {
             maxSide = c
             averageSide = a
@@ -204,12 +200,10 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
  * Найти длину пересечения отрезков AB и CD.
  * Если пересечения нет, вернуть -1.
  */
-fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
-    return when{
-        c >= a && d <= b -> d - c
-        a >= c && b <= d -> b - a
-        c in a..b -> b - c
-        d in a..b -> d - a
-        else -> -1
-    }
+fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int = when {
+    c >= a && d <= b -> d - c
+    a >= c && b <= d -> b - a
+    c in a..b -> b - c
+    d in a..b -> d - a
+    else -> -1
 }

@@ -1,8 +1,6 @@
 @file:Suppress("UNUSED_PARAMETER")
 
 package lesson1.task1
-
-import ru.spbstu.wheels.intersperse
 import kotlin.math.*
 
 // Урок 1: простые функции

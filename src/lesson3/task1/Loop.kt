@@ -2,6 +2,7 @@
 
 package lesson3.task1
 
+import lesson1.task1.sqr
 import kotlin.math.abs
 import kotlin.math.pow
 import kotlin.math.sqrt
@@ -93,10 +94,9 @@ fun digitNumber(n: Int): Int {
 fun fib(n: Int): Int {
     var firstInOrder = 1
     var secondInOrder = 1
-    var tmp: Int
     var count = 3
     while (count <= n) {
-        tmp = firstInOrder
+        val tmp = firstInOrder
         firstInOrder = secondInOrder
         secondInOrder += tmp
         count += 1
@@ -239,16 +239,16 @@ fun cos(x: Double, eps: Double): Double = TODO()
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun squareSequenceDigit(n: Int): Int {
-    var digit = 2
-    var pseudoStringLastDigits = 1
-    var pseudoStringDigitCount = 1
-    while (pseudoStringDigitCount < n) {
-        pseudoStringLastDigits = digit * digit
-        pseudoStringDigitCount += digitNumber(digit * digit)
-        digit += 1
+    var digitCount = 0
+    var number = 0
+    while (digitCount < n) {
+        number += 1
+        digitCount += digitNumber(number * number)
+
     }
-    return pseudoStringLastDigits % (10.0.pow(pseudoStringDigitCount - n + 1).toInt()) / (10.0.pow(pseudoStringDigitCount - n)).toInt()
+    return (number * number / 10.0.pow(digitCount - n) % 10).toInt()
 }
+
 
 /**
  * Сложная (5 баллов)
@@ -260,15 +260,14 @@ fun squareSequenceDigit(n: Int): Int {
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun fibSequenceDigit(n: Int): Int {
-    var digit = 2
-    var pseudoStringLastDigits = 1
-    var pseudoStringDigitCount = 1
-    var fibResult: Int
-    while (pseudoStringDigitCount < n) {
-        fibResult = fib(digit)
-        pseudoStringLastDigits = fibResult
-        pseudoStringDigitCount += digitNumber(fibResult)
-        digit += 1
+    var digitCount = 0
+    var number = 0
+    var lastFib = 0
+    while (digitCount < n) {
+        number += 1
+        lastFib = fib(number)
+        digitCount += digitNumber(lastFib)
+
     }
-    return pseudoStringLastDigits % (10.0.pow(pseudoStringDigitCount - n + 1).toInt()) / (10.0.pow(pseudoStringDigitCount - n)).toInt()
+    return (lastFib / 10.0.pow(digitCount - n) % 10).toInt()
 }
