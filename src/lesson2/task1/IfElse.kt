@@ -135,7 +135,7 @@ fun rookOrBishopThreatens(
     rookX: Int, rookY: Int,
     bishopX: Int, bishopY: Int
 ): Int = when {
-    (kingX == rookX || kingY == rookY) && (abs(bishopX - kingX) == abs(bishopY - kingY)) -> 3
+    kingX == rookX || kingY == rookY && (abs(bishopX - kingX) == abs(bishopY - kingY)) -> 3
     kingX == rookX || kingY == rookY -> 1
     abs(bishopX - kingX) == abs(bishopY - kingY) -> 2
     else -> 0
@@ -151,43 +151,20 @@ fun rookOrBishopThreatens(
  * Если такой треугольник не существует, вернуть -1.
  */
 fun triangleKind(a: Double, b: Double, c: Double): Int {
-    val maxSide: Double
-    val averageSide: Double
-    val minSide: Double
-
-
+    val averageSide1: Double
+    val averageSide2: Double
+    val maxSide = maxOf(a, b, c)
     if (a + b <= c || a + c <= b || b + c <= a) return -1
-
-    if (a > b) {
-        if (a > c) {
-            maxSide = a
-            averageSide = b
-            minSide = c
-        } else {
-            maxSide = c
-            averageSide = a
-            minSide = b
-        }
+    if (a < maxSide) {
+        averageSide1 = a
+        averageSide2 = if (b < maxSide) b else c
     } else {
-        if (b > c) {
-            if (a > c) {
-                maxSide = b
-                averageSide = a
-                minSide = c
-            } else {
-                maxSide = b
-                averageSide = c
-                minSide = a
-            }
-        } else {
-            maxSide = c
-            averageSide = b
-            minSide = a
-        }
+        averageSide1 = b
+        averageSide2 = c
     }
     return when {
-        sqr(maxSide) == sqr(averageSide) + sqr(minSide) -> 1
-        sqr(maxSide) < sqr(averageSide) + sqr(minSide) -> 0
+        sqr(maxSide) == sqr(averageSide1) + sqr(averageSide2) -> 1
+        sqr(maxSide) < sqr(averageSide1) + sqr(averageSide2) -> 0
         else -> 2
     }
 }
