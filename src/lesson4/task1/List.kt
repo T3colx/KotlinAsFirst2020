@@ -3,6 +3,9 @@
 package lesson4.task1
 
 import lesson1.task1.discriminant
+import lesson3.task1.digitNumber
+import java.lang.StringBuilder
+import kotlin.math.pow
 import kotlin.math.sqrt
 
 // Урок 4: списки
@@ -16,15 +19,15 @@ import kotlin.math.sqrt
  * Найти все корни уравнения x^2 = y
  */
 fun sqRoots(y: Double) =
-    when {
-        y < 0 -> listOf()
-        y == 0.0 -> listOf(0.0)
-        else -> {
-            val root = sqrt(y)
-            // Результат!
-            listOf(-root, root)
+        when {
+            y < 0 -> listOf()
+            y == 0.0 -> listOf(0.0)
+            else -> {
+                val root = sqrt(y)
+                // Результат!
+                listOf(-root, root)
+            }
         }
-    }
 
 /**
  * Пример
@@ -120,14 +123,30 @@ fun buildSumExample(list: List<Int>) = list.joinToString(separator = " + ", post
  * по формуле abs = sqrt(a1^2 + a2^2 + ... + aN^2).
  * Модуль пустого вектора считать равным 0.0.
  */
-fun abs(v: List<Double>): Double = TODO()
+fun abs(v: List<Double>): Double {
+    var result = 0.0
+    for (i in v) {
+        result += i * i
+    }
+    return sqrt(result)
+}
 
 /**
  * Простая (2 балла)
  *
  * Рассчитать среднее арифметическое элементов списка list. Вернуть 0.0, если список пуст
  */
-fun mean(list: List<Double>): Double = TODO()
+fun mean(list: List<Double>): Double {
+    var result = 0.0
+    var count = 0
+
+    for (item in list) {
+        result += item
+        count += 1
+    }
+    return if (result == 0.0) 0.0
+    else result / count
+}
 
 /**
  * Средняя (3 балла)
@@ -137,7 +156,23 @@ fun mean(list: List<Double>): Double = TODO()
  *
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
-fun center(list: MutableList<Double>): MutableList<Double> = TODO()
+fun center(list: MutableList<Double>): MutableList<Double> {
+    var sum = 0.0
+    var count = 0
+
+    for (item in list) {
+        count += 1
+        sum += item
+    }
+    val average = sum / count
+
+    count = 0
+    for (item in list) {
+        list[count] -= average
+        count += 1
+    }
+    return list
+}
 
 /**
  * Средняя (3 балла)
@@ -146,7 +181,16 @@ fun center(list: MutableList<Double>): MutableList<Double> = TODO()
  * представленные в виде списков a и b. Скалярное произведение считать по формуле:
  * C = a1b1 + a2b2 + ... + aNbN. Произведение пустых векторов считать равным 0.
  */
-fun times(a: List<Int>, b: List<Int>): Int = TODO()
+fun times(a: List<Int>, b: List<Int>): Int {
+    var result = 0
+    var index = 0
+
+    for (item in a) {
+        result += a[index] * b[index]
+        index += 1
+    }
+    return result
+}
 
 /**
  * Средняя (3 балла)
@@ -156,7 +200,15 @@ fun times(a: List<Int>, b: List<Int>): Int = TODO()
  * Коэффициенты многочлена заданы списком p: (p0, p1, p2, p3, ..., pN).
  * Значение пустого многочлена равно 0 при любом x.
  */
-fun polynom(p: List<Int>, x: Int): Int = TODO()
+fun polynom(p: List<Int>, x: Int): Int {
+    var resultSum = 0
+    var power = 0
+    for (item in p) {
+        resultSum += item * x.toDouble().pow(power).toInt()
+        power += 1
+    }
+    return resultSum
+}
 
 /**
  * Средняя (3 балла)
@@ -168,7 +220,15 @@ fun polynom(p: List<Int>, x: Int): Int = TODO()
  *
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
-fun accumulate(list: MutableList<Int>): MutableList<Int> = TODO()
+fun accumulate(list: MutableList<Int>): MutableList<Int> {
+    var tmp = 0
+    for (index in 0 until list.size) {
+        tmp += list[index]
+        list[index] = tmp
+    }
+    return list
+}
+
 
 /**
  * Средняя (3 балла)
@@ -177,7 +237,19 @@ fun accumulate(list: MutableList<Int>): MutableList<Int> = TODO()
  * Результат разложения вернуть в виде списка множителей, например 75 -> (3, 5, 5).
  * Множители в списке должны располагаться по возрастанию.
  */
-fun factorize(n: Int): List<Int> = TODO()
+fun factorize(n: Int): List<Int> {
+    val result = mutableListOf<Int>()
+    var number = n
+    var divider = 2
+    while (number != 1) {
+        while (number % divider == 0) {
+            number /= divider
+            result.add(divider)
+        }
+        divider += 1
+    }
+    return result
+}
 
 /**
  * Сложная (4 балла)
@@ -186,7 +258,19 @@ fun factorize(n: Int): List<Int> = TODO()
  * Результат разложения вернуть в виде строки, например 75 -> 3*5*5
  * Множители в результирующей строке должны располагаться по возрастанию.
  */
-fun factorizeToString(n: Int): String = TODO()
+fun factorizeToString(n: Int): String {
+    val result = mutableListOf<Int>()
+    var number = n
+    var divider = 2
+    while (number != 1) {
+        while (number % divider == 0) {
+            number /= divider
+            result.add(divider)
+        }
+        divider += 1
+    }
+    return result.joinToString(separator = "*")
+}
 
 /**
  * Средняя (3 балла)
@@ -241,7 +325,23 @@ fun decimalFromString(str: String, base: Int): Int = TODO()
  * 90 = XC, 100 = C, 400 = CD, 500 = D, 900 = CM, 1000 = M.
  * Например: 23 = XXIII, 44 = XLIV, 100 = C
  */
-fun roman(n: Int): String = TODO()
+fun roman(n: Int): String {
+    val vocabulary = listOf("I", "V", "X", "L", "C", "D", "M")
+    var result = StringBuilder()
+    var i = 0
+    for (index in digitNumber(n) - 1 downTo 0) {
+        var digit = n % 10.0.pow(digitNumber(n) - index).toInt() / 10.0.pow(digitNumber(n) - index - 1).toInt()
+        when (digit) {
+            4 -> result.append(vocabulary[i + 1], vocabulary[i])
+            9 -> result.append(vocabulary[i + 2], vocabulary[i])
+            in 1..3 -> result.append(vocabulary[i].repeat(digit))
+            in 5..8 -> result.append(vocabulary[i].repeat(digit - 5), vocabulary[i + 1])
+        }
+        i += 2
+    }
+    return result.reverse().toString()
+
+}
 
 /**
  * Очень сложная (7 баллов)
@@ -250,4 +350,7 @@ fun roman(n: Int): String = TODO()
  * Например, 375 = "триста семьдесят пять",
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
-fun russian(n: Int): String = TODO()
+fun russian(n: Int): String {
+    var result = ""
+    return result
+}
