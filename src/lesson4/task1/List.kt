@@ -258,19 +258,7 @@ fun factorize(n: Int): List<Int> {
  * Результат разложения вернуть в виде строки, например 75 -> 3*5*5
  * Множители в результирующей строке должны располагаться по возрастанию.
  */
-fun factorizeToString(n: Int): String {
-    val result = mutableListOf<Int>()
-    var number = n
-    var divider = 2
-    while (number != 1) {
-        while (number % divider == 0) {
-            number /= divider
-            result.add(divider)
-        }
-        divider += 1
-    }
-    return result.joinToString(separator = "*")
-}
+fun factorizeToString(n: Int): String = TODO()
 
 /**
  * Средняя (3 балла)
@@ -325,13 +313,14 @@ fun decimalFromString(str: String, base: Int): Int = TODO()
  * 90 = XC, 100 = C, 400 = CD, 500 = D, 900 = CM, 1000 = M.
  * Например: 23 = XXIII, 44 = XLIV, 100 = C
  */
+fun digit(n: Int, index: Int): Int = n % 10.0.pow(index + 1).toInt() / 10.0.pow(index).toInt()
+
 fun roman(n: Int): String {
     val vocabulary = listOf("I", "V", "X", "L", "C", "D", "M")
-    var result = StringBuilder()
+    val result = StringBuilder()
     var i = 0
-    for (index in digitNumber(n) - 1 downTo 0) {
-        var digit = n % 10.0.pow(digitNumber(n) - index).toInt() / 10.0.pow(digitNumber(n) - index - 1).toInt()
-        when (digit) {
+    for (index in 0 until digitNumber(n)) {
+        when (val digit = digit(n, index)) {
             4 -> result.append(vocabulary[i + 1], vocabulary[i])
             9 -> result.append(vocabulary[i + 2], vocabulary[i])
             in 1..3 -> result.append(vocabulary[i].repeat(digit))
@@ -351,6 +340,35 @@ fun roman(n: Int): String {
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
 fun russian(n: Int): String {
-    var result = ""
-    return result
+    val result = StringBuilder()
+    var flag = true
+    val vocabulary = listOf(
+            listOf("один", "два", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять"),
+            listOf("десть", "двадцать", "тридцать", "сорок", "пятьдесят", "шестьдесят", "семьдесят", "восемьдесят", "девяносто"),
+            listOf("сто", "двести", "триста", "четыреста", "пятьсот", "шестьсот", "семьсот", "восемьсот", "девятьсот"),
+            listOf("одиннадцать", "двенадцать", "тринадцать", "четырнадцать", "пятнадцать", "шестнадцать", "семнадцать", "восемнадцать", "девятнадцать"))
+    for (index in digitNumber(n) - 1 downTo 0) {
+        val digit = digit(n, index)
+        if (index == 3 && flag) {
+            when (digit) {
+                1 -> result.append("одна тысяча ")
+                2 -> result.append("две тысячи ")
+                in 3..4 -> result.append(vocabulary[0][digit - 1], "тысячи ")
+                in 5..9 -> result.append(vocabulary[0][digit - 1], "тысяч ")
+                0 -> result.append("тысяч ")
+            }
+        } else {
+            if (digit == 1 && index % 3 == 1) {
+                result.append(vocabulary[3][digit(n, index - 1) - 1], " ")
+                flag = false
+            } else {
+                if (flag && digit != 0) result.append(vocabulary[index % 3][digit - 1], " ")
+            }
+            if (!flag && index == 3) {
+                result.append("тысяч ")
+                flag = true
+            }
+        }
+    }
+    return result.toString().trim()
 }
