@@ -339,6 +339,8 @@ fun roman(n: Int): String {
  * Например, 375 = "триста семьдесят пять",
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
+
+
 fun russian(n: Int): String {
     val result = StringBuilder()
     var flag = true
@@ -353,21 +355,24 @@ fun russian(n: Int): String {
             when (digit) {
                 1 -> result.append("одна тысяча ")
                 2 -> result.append("две тысячи ")
-                in 3..4 -> result.append(vocabulary[0][digit - 1], "тысячи ")
-                in 5..9 -> result.append(vocabulary[0][digit - 1], "тысяч ")
+                in 3..4 -> result.append(vocabulary[0][digit - 1], " тысячи ")
+                in 5..9 -> result.append(vocabulary[0][digit - 1], " тысяч ")
                 0 -> result.append("тысяч ")
             }
         } else {
             if (digit == 1 && index % 3 == 1) {
-                result.append(vocabulary[3][digit(n, index - 1) - 1], " ")
+                result.append(vocabulary[3][digit(n, index - 1) - 1], ' ')
                 flag = false
             } else {
-                if (flag && digit != 0) result.append(vocabulary[index % 3][digit - 1], " ")
+                if (flag && digit != 0) {
+                    result.append(vocabulary[index % 3][digit - 1], ' ')
+                }
             }
-            if (!flag && index == 3) {
-                result.append("тысяч ")
-                flag = true
-            }
+
+        }
+        if (!flag && index == 3) {
+            result.append("тысяч ")
+            flag = true
         }
     }
     return result.toString().trim()
