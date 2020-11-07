@@ -103,10 +103,6 @@ class Tests {
     @Tag("2")
     fun buildGrades() {
         assertEquals(
-            mapOf<Int, List<String>>(),
-            buildGrades(mapOf())
-        )
-        assertEquals(
             mapOf(5 to listOf("Михаил", "Семён"), 3 to listOf("Марат")),
             buildGrades(mapOf("Марат" to 3, "Семён" to 5, "Михаил" to 5))
                 .mapValues { (_, v) -> v.sorted() }
@@ -116,6 +112,10 @@ class Tests {
             buildGrades(mapOf("Марат" to 3, "Семён" to 3, "Михаил" to 3))
                 .mapValues { (_, v) -> v.sorted() }
         )
+        assertEquals(
+                mapOf<Int, List<String>>(),
+                buildGrades(mapOf())
+        )
     }
 
     @Test
@@ -123,6 +123,7 @@ class Tests {
     fun containsIn() {
         assertTrue(containsIn(mapOf("a" to "z"), mapOf("a" to "z", "b" to "sweet")))
         assertFalse(containsIn(mapOf("a" to "z"), mapOf("a" to "zee", "b" to "sweet")))
+        assertFalse(containsIn(mapOf("a" to "z"), mapOf("b" to "zee", "c" to "sweet")))
     }
 
     @Test
