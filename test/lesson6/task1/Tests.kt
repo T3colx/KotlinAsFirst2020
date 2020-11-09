@@ -89,15 +89,15 @@ class Tests {
     @Test
     @Tag("6")
     fun plusMinus() {
-        assertEquals(0, plusMinus("0"))
-        assertEquals(4, plusMinus("2 + 2"))
-        assertEquals(6, plusMinus("2 + 31 - 40 + 13"))
-        assertEquals(-1, plusMinus("0 - 1"))
-        assertThrows(IllegalArgumentException::class.java) { plusMinus("+2") }
-        assertThrows(IllegalArgumentException::class.java) { plusMinus("+ 4") }
-        assertThrows(IllegalArgumentException::class.java) { plusMinus("4 - -2") }
-        assertThrows(IllegalArgumentException::class.java) { plusMinus("44 - - 12") }
-        assertThrows(IllegalArgumentException::class.java) { plusMinus("4 - + 12") }
+        assertEquals(0, plusMinus("0")); println("passed")
+        assertEquals(4, plusMinus("2 + 2")); println("passed")
+        assertEquals(6, plusMinus("2 + 31 - 40 + 13")); println("passed")
+        assertEquals(-1, plusMinus("0 - 1")); println("passed")
+        assertThrows(IllegalArgumentException::class.java) { plusMinus("+2") }; println("passed")
+        assertThrows(IllegalArgumentException::class.java) { plusMinus("+ 4") }; println("passed")
+        assertThrows(IllegalArgumentException::class.java) { plusMinus("4 - -2") }; println("passed")
+        assertThrows(IllegalArgumentException::class.java) { plusMinus("44 - - 12") }; println("passed")
+        assertThrows(IllegalArgumentException::class.java) { plusMinus("4 - + 12") }; println("passed")
     }
 
     @Test

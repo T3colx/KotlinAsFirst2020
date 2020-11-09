@@ -136,17 +136,18 @@ fun abs(v: List<Double>): Double {
  *
  * Рассчитать среднее арифметическое элементов списка list. Вернуть 0.0, если список пуст
  */
+
 fun mean(list: List<Double>): Double {
     var result = 0.0
-    var count = 0
 
     for (item in list) {
         result += item
-        count += 1
     }
-    return if (result == 0.0) 0.0
-    else result / count
+
+    return if (list.isNotEmpty()) result / list.size
+    else 0.0
 }
+
 
 /**
  * Средняя (3 балла)
@@ -157,20 +158,12 @@ fun mean(list: List<Double>): Double {
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
 fun center(list: MutableList<Double>): MutableList<Double> {
-    var sum = 0.0
-    var count = 0
+    val average = mean(list)
 
-    for (item in list) {
-        count += 1
-        sum += item
+    for (index in list.indices) {
+        list[index] -= average
     }
-    val average = sum / count
 
-    count = 0
-    for (item in list) {
-        list[count] -= average
-        count += 1
-    }
     return list
 }
 
@@ -183,12 +176,11 @@ fun center(list: MutableList<Double>): MutableList<Double> {
  */
 fun times(a: List<Int>, b: List<Int>): Int {
     var result = 0
-    var index = 0
 
-    for (item in a) {
+    for (index in a.indices) {
         result += a[index] * b[index]
-        index += 1
     }
+
     return result
 }
 
@@ -202,10 +194,10 @@ fun times(a: List<Int>, b: List<Int>): Int {
  */
 fun polynom(p: List<Int>, x: Int): Int {
     var resultSum = 0
-    var power = 0
+    var poweredX = 1
     for (item in p) {
-        resultSum += item * x.toDouble().pow(power).toInt()
-        power += 1
+        resultSum += item * poweredX
+        poweredX *= x
     }
     return resultSum
 }
@@ -222,10 +214,12 @@ fun polynom(p: List<Int>, x: Int): Int {
  */
 fun accumulate(list: MutableList<Int>): MutableList<Int> {
     var tmp = 0
+
     for (index in 0 until list.size) {
         tmp += list[index]
         list[index] = tmp
     }
+
     return list
 }
 
@@ -241,6 +235,7 @@ fun factorize(n: Int): List<Int> {
     val result = mutableListOf<Int>()
     var number = n
     var divider = 2
+
     while (number != 1) {
         while (number % divider == 0) {
             number /= divider
@@ -248,6 +243,7 @@ fun factorize(n: Int): List<Int> {
         }
         divider += 1
     }
+
     return result
 }
 

@@ -139,6 +139,7 @@ class Tests {
 
         subtractOf(from, mapOf("a" to "z"))
         assertEquals(mapOf("b" to "c"), from)
+
     }
 
     @Test
@@ -316,6 +317,14 @@ class Tests {
         assertEquals(
             Pair(-1, -1),
             findSumOfTwo(listOf(1, 2, 3), 6)
+        )
+        assertEquals(
+                Pair(2, 3),
+                findSumOfTwo(listOf(1, 2, 3, 3), 6)
+        )
+        assertEquals(
+                Pair(0, 2),
+                findSumOfTwo(listOf(6, 2, 3, 6), 9)
         )
     }
 
