@@ -15,8 +15,8 @@ package lesson5.task1
  * игнорируется.
  */
 fun shoppingListCost(
-        shoppingList: List<String>,
-        costs: Map<String, Double>
+    shoppingList: List<String>,
+    costs: Map<String, Double>
 ): Double {
     var totalCost = 0.0
 
@@ -37,8 +37,8 @@ fun shoppingListCost(
  * для которых телефон начинается с заданного кода страны `countryCode`
  */
 fun filterByCountryCode(
-        phoneBook: MutableMap<String, String>,
-        countryCode: String
+    phoneBook: MutableMap<String, String>,
+    countryCode: String
 ) {
     val namesToRemove = mutableListOf<String>()
 
@@ -60,8 +60,8 @@ fun filterByCountryCode(
  * и вернуть отфильтрованный текст
  */
 fun removeFillerWords(
-        text: List<String>,
-        vararg fillerWords: String
+    text: List<String>,
+    vararg fillerWords: String
 ): List<String> {
     val fillerWordSet = setOf(*fillerWords)
 
@@ -135,6 +135,8 @@ fun subtractOf(a: MutableMap<String, String>, b: Map<String, String>) {
  * В выходном списке не должно быть повторяюихся элементов,
  * т. е. whoAreInBoth(listOf("Марат", "Семён, "Марат"), listOf("Марат", "Марат")) == listOf("Марат")
  */
+
+
 fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = TODO()
 
 /**
@@ -277,8 +279,14 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  *   findSumOfTwo(listOf(1, 2, 3), 4) -> Pair(0, 2)
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
-fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> = TODO()
-
+fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
+    val mapPair = mutableMapOf<Int, Int>()
+    for ((index, item) in list.withIndex()) {
+        if (mapPair.containsKey(number - item)) return Pair(mapPair[number - item]!!.toInt(), index)
+        else mapPair[item] = index
+    }
+    return Pair(-1, -1)
+}
 /**
  * Очень сложная (8 баллов)
  *
@@ -300,4 +308,37 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> = TODO()
  *     450
  *   ) -> emptySet()
  */
-fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> = TODO()
+
+
+
+fun bestValue(newIndex: Int, weightLimit: Int, stats: List<Pair<Int, Int>>): Int {
+    return when {
+        newIndex == 0 -> 0
+        stats[newIndex - 1].first > weightLimit -> bestValue(newIndex - 1, weightLimit, stats)
+        else -> maxOf(bestValue(newIndex - 1, weightLimit, stats), bestValue(newIndex - 1, weightLimit - stats[newIndex - 1].first, stats) + stats[newIndex - 1].second)
+    }
+}
+
+
+
+fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
+    val name = mutableListOf<String>()
+    val stats = mutableListOf<Pair<Int, Int>>()
+    val result = mutableSetOf<String>()
+    var weightLimit = capacity
+
+    for ((key, value) in treasures) {
+        name.add(key)
+        stats.add(value)
+    }
+
+    for (index in stats.size - 1 downTo 0) {
+        if (bestValue(index + 1, weightLimit, stats) > bestValue(index, weightLimit, stats)) {
+            result.add(name[index])
+            weightLimit -= stats[index].first
+        }
+
+    }
+
+    return result
+}

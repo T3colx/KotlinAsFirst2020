@@ -89,24 +89,24 @@ class Tests {
     @Test
     @Tag("6")
     fun plusMinus() {
-        assertEquals(0, plusMinus("0")); println("passed")
-        assertEquals(4, plusMinus("2 + 2")); println("passed")
-        assertEquals(6, plusMinus("2 + 31 - 40 + 13")); println("passed")
-        assertEquals(-1, plusMinus("0 - 1")); println("passed")
-        assertThrows(IllegalArgumentException::class.java) { plusMinus("+2") }; println("passed")
-        assertThrows(IllegalArgumentException::class.java) { plusMinus("+ 4") }; println("passed")
-        assertThrows(IllegalArgumentException::class.java) { plusMinus("4 - -2") }; println("passed")
-        assertThrows(IllegalArgumentException::class.java) { plusMinus("44 - - 12") }; println("passed")
-        assertThrows(IllegalArgumentException::class.java) { plusMinus("4 - + 12") }; println("passed")
+        assertEquals(0, plusMinus("0")); println("1 passed")
+        assertEquals(4, plusMinus("2 + 2")); println("2 passed")
+        assertEquals(6, plusMinus("2 + 31 - 40 + 13")); println("3 passed")
+        assertEquals(-1, plusMinus("0 - 1")); println("4 passed")
+        assertThrows(IllegalArgumentException::class.java) { plusMinus("+2") }; println("5 passed")
+        assertThrows(IllegalArgumentException::class.java) { plusMinus("+ 4") }; println("6 passed")
+        assertThrows(IllegalArgumentException::class.java) { plusMinus("4 - -2") }; println("7 passed")
+        assertThrows(IllegalArgumentException::class.java) { plusMinus("44 - - 12") }; println("8 passed")
+        assertThrows(IllegalArgumentException::class.java) { plusMinus("4 - + 12") }; println("9 passed")
     }
 
     @Test
     @Tag("6")
     fun firstDuplicateIndex() {
-        assertEquals(-1, firstDuplicateIndex("Привет"))
-        assertEquals(9, firstDuplicateIndex("Он пошёл в в школу"))
-        assertEquals(40, firstDuplicateIndex("Яблоко упало на ветку с ветки оно упало на на землю"))
-        assertEquals(9, firstDuplicateIndex("Мы пошли прямо Прямо располагался магазин"))
+        assertEquals(-1, firstDuplicateIndex("Привет")); println("1 passed")
+        assertEquals(9, firstDuplicateIndex("Он пошёл в в школу")); println("1 passed"); println("2 passed")
+        assertEquals(40, firstDuplicateIndex("Яблоко упало на ветку с ветки оно упало на на землю")); println("3 passed")
+        assertEquals(9, firstDuplicateIndex("Мы пошли прямо Прямо располагался магазин")); println("4 passed")
     }
 
     @Test

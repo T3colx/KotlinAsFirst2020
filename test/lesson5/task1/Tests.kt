@@ -140,6 +140,11 @@ class Tests {
         subtractOf(from, mapOf("a" to "z"))
         assertEquals(mapOf("b" to "c"), from)
 
+        subtractOf(mutableMapOf("" to ""), mapOf("" to ""))
+        assertEquals(mapOf("" to ""), mutableMapOf("" to ""))
+
+
+
     }
 
     @Test
