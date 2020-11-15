@@ -94,6 +94,8 @@ fun deleteMarked(inputName: String, outputName: String) {
  *
  */
 fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> {
+    TODO()
+/*
     val wordCount = mutableMapOf<String, Int>()
     val finder = substrings.toSet()
 
@@ -121,6 +123,8 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
     }
     println("#######################")
     return wordCount
+
+ */
 }
 
 
