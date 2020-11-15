@@ -344,6 +344,13 @@ class Tests {
             )
         )
         assertEquals(
+                setOf("Кубок"),
+                bagPacking(
+                        mapOf("Слиток" to (1000 to 5000), "Кубок" to (500 to 2000)),
+                        850
+                )
+        )
+        assertEquals(
             emptySet<String>(),
             bagPacking(
                 mapOf("Кубок" to (500 to 2000), "Слиток" to (1000 to 5000)),

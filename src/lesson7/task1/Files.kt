@@ -63,7 +63,25 @@ fun alignFile(inputName: String, lineLength: Int, outputName: String) {
  * Подчёркивание в середине и/или в конце строк значения не имеет.
  */
 fun deleteMarked(inputName: String, outputName: String) {
-    TODO()
+    val writer = File(outputName).bufferedWriter()
+
+    for (line in File(inputName).readLines()) {
+        if (line.isEmpty()) {
+            writer.newLine()
+            continue
+        }
+        if (!line.startsWith('_')) {
+            for (word in line.split(Regex("\\s+"))) {
+                if (word != line.split(Regex("\\s+")).last()) {
+                    writer.write("$word ")
+                } else {
+                    writer.write(word)
+                }
+            }
+            writer.newLine()
+        }
+    }
+    writer.close()
 }
 
 /**
@@ -75,7 +93,35 @@ fun deleteMarked(inputName: String, outputName: String) {
  * Регистр букв игнорировать, то есть буквы е и Е считать одинаковыми.
  *
  */
-fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> = TODO()
+fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> {
+    val wordCount = mutableMapOf<String, Int>()
+    val finder = substrings.toSet()
+
+    for (name in substrings) wordCount[name] = 0
+    fun counting(argument) {
+        for (match in Regex("$keyWordLowered").findAll(line.toLowerCase())) {
+            wordCount[keyWord] = wordCount[keyWord]!!.plus(1)
+            println(keyWord + " " + wordCount[keyWord])
+        }
+
+    for (line in File(inputName).readLines()) {
+        if (line.isEmpty()) {
+            continue
+        }
+        for (keyWord in finder) {
+            val keyWordLowered = keyWord.toLowerCase()
+            if (keyWord != ".") {
+
+                }
+            } else {
+
+            }
+        }
+        println(line)
+    }
+    println("#######################")
+    return wordCount
+}
 
 
 /**

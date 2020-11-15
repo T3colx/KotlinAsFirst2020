@@ -2,6 +2,8 @@
 
 package lesson5.task1
 
+import kotlin.math.max
+
 // Урок 5: ассоциативные массивы и множества
 // Максимальное количество баллов = 14
 // Рекомендуемое количество баллов = 9
@@ -98,6 +100,7 @@ fun buildWordSet(text: List<String>): MutableSet<String> {
  */
 fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> = TODO()
 
+
 /**
  * Простая (2 балла)
  *
@@ -109,6 +112,7 @@ fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> = TODO()
  *   containsIn(mapOf("a" to "z"), mapOf("a" to "zee", "b" to "sweet")) -> false
  */
 fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean = TODO()
+
 
 /**
  * Простая (2 балла)
@@ -137,7 +141,7 @@ fun subtractOf(a: MutableMap<String, String>, b: Map<String, String>) {
  */
 
 
-fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = TODO()
+fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = a.toSet().intersect(b.toSet()).toList()
 
 /**
  * Средняя (3 балла)
@@ -309,36 +313,32 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  *   ) -> emptySet()
  */
 
-
-
-fun bestValue(newIndex: Int, weightLimit: Int, stats: List<Pair<Int, Int>>): Int {
-    return when {
-        newIndex == 0 -> 0
-        stats[newIndex - 1].first > weightLimit -> bestValue(newIndex - 1, weightLimit, stats)
-        else -> maxOf(bestValue(newIndex - 1, weightLimit, stats), bestValue(newIndex - 1, weightLimit - stats[newIndex - 1].first, stats) + stats[newIndex - 1].second)
-    }
-}
-
-
-
 fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
     val name = mutableListOf<String>()
     val stats = mutableListOf<Pair<Int, Int>>()
     val result = mutableSetOf<String>()
-    var weightLimit = capacity
-
     for ((key, value) in treasures) {
         name.add(key)
         stats.add(value)
     }
 
-    for (index in stats.size - 1 downTo 0) {
-        if (bestValue(index + 1, weightLimit, stats) > bestValue(index, weightLimit, stats)) {
-            result.add(name[index])
-            weightLimit -= stats[index].first
+    val table = Array(name.size + 1) { Array(capacity + 1) { 0 } }
+    for (row in 1..name.size) {
+        for (column in 1..capacity) {
+            if (column >= stats[row - 1].first) table[row][column] =
+                    max(table[row - 1][column], table[row - 1][column - stats[row - 1].first] + stats[row - 1].second)
+            else table[row][column] = table[row - 1][column]
         }
-
+    }
+    fun putOrNot(row: Int, column: Int) {
+        if (table[row][column] == 0) return
+        if (table[row - 1][column] == table[row][column]) putOrNot(row - 1, column)
+        else {
+            putOrNot(row - 1, column - stats[row - 1].first)
+            result += name[row - 1]
+        }
     }
 
+    putOrNot(name.size, capacity)
     return result
 }
