@@ -71,13 +71,7 @@ fun deleteMarked(inputName: String, outputName: String) {
             continue
         }
         if (!line.startsWith('_')) {
-            for (word in line.split(Regex("\\s+"))) {
-                if (word != line.split(Regex("\\s+")).last()) {
-                    writer.write("$word ")
-                } else {
-                    writer.write(word)
-                }
-            }
+            writer.write(line)
             writer.newLine()
         }
     }
