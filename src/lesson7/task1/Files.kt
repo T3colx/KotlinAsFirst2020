@@ -2,7 +2,9 @@
 
 package lesson7.task1
 
+import java.io.BufferedWriter
 import java.io.File
+import java.util.*
 
 // Урок 7: работа с файлами
 // Урок интегральный, поэтому его задачи имеют сильно увеличенную стоимость
@@ -21,6 +23,7 @@ import java.io.File
  * Пустые строки во входном файле обозначают конец абзаца,
  * их следует сохранить и в выходном файле
  */
+
 fun alignFile(inputName: String, lineLength: Int, outputName: String) {
     val writer = File(outputName).bufferedWriter()
     var currentLineLength = 0
@@ -76,7 +79,10 @@ fun deleteMarked(inputName: String, outputName: String) {
         }
     }
     writer.close()
+
 }
+
+
 
 /**
  * Средняя (14 баллов)
@@ -87,38 +93,40 @@ fun deleteMarked(inputName: String, outputName: String) {
  * Регистр букв игнорировать, то есть буквы е и Е считать одинаковыми.
  *
  */
-fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> {
-    TODO()
-/*
-    val wordCount = mutableMapOf<String, Int>()
-    val finder = substrings.toSet()
 
-    for (name in substrings) wordCount[name] = 0
-    fun counting(argument) {
-        for (match in Regex("$keyWordLowered").findAll(line.toLowerCase())) {
-            wordCount[keyWord] = wordCount[keyWord]!!.plus(1)
-            println(keyWord + " " + wordCount[keyWord])
-        }
+
+
+fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> {
+    val wordCount = mutableMapOf<String, Int>()
+    val loweredWordCount = mutableMapOf<String, Int>()
+    for (name in substrings) loweredWordCount[name.toLowerCase()] = 0
+    val finder = mutableSetOf<String>()
+    for (item in substrings) finder.add(item.toLowerCase())
 
     for (line in File(inputName).readLines()) {
-        if (line.isEmpty()) {
-            continue
-        }
-        for (keyWord in finder) {
-            val keyWordLowered = keyWord.toLowerCase()
-            if (keyWord != ".") {
-
+        val loweredLine = line.toLowerCase()
+        for ((index, symbol) in loweredLine.withIndex()) {
+            for (word in finder) {
+                if (word.startsWith(symbol)) {
+                    var lineIndex = index + 1
+                    var matchingIndex = 1
+                    var score = 1
+                    while (lineIndex < line.length && matchingIndex <= word.length &&
+                            score < word.length && loweredLine[lineIndex] == word[matchingIndex]) {
+                        matchingIndex += 1
+                        lineIndex += 1
+                        score += 1
+                    }
+                    if (score == word.length) {
+                        loweredWordCount[word] = loweredWordCount[word]!! + 1
+                    }
                 }
-            } else {
-
             }
-        }
-        println(line)
-    }
-    println("#######################")
-    return wordCount
 
- */
+        }
+    }
+    for (name in substrings) wordCount[name] = loweredWordCount[name.toLowerCase()]!!
+    return wordCount
 }
 
 
@@ -312,21 +320,82 @@ Suspendisse ~~et elit in enim tempus iaculis~~.
  *
  * Соответствующий выходной файл:
 <html>
-    <body>
-        <p>
-            Lorem ipsum <i>dolor sit amet</i>, consectetur <b>adipiscing</b> elit.
-            Vestibulum lobortis. <s>Est vehicula rutrum <i>suscipit</i></s>, ipsum <s>lib</s>ero <i>placerat <b>tortor</b></i>.
-        </p>
-        <p>
-            Suspendisse <s>et elit in enim tempus iaculis</s>.
-        </p>
-    </body>
+<body>
+<p>
+Lorem ipsum <i>dolor sit amet</i>, consectetur <b>adipiscing</b> elit.
+Vestibulum lobortis. <s>Est vehicula rutrum <i>suscipit</i></s>, ipsum <s>lib</s>ero <i>placerat <b>tortor</b></i>.
+</p>
+<p>
+Suspendisse <s>et elit in enim tempus iaculis</s>.
+</p>
+</body>
 </html>
  *
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
  */
+
+fun tagsInStack(targetTag: String, isOpening: Boolean, stack: Stack<String>, writer: BufferedWriter): Stack<String> {
+    if (isOpening) {
+        stack.push(targetTag)
+        writer.write("<$targetTag>")
+    } else {
+        stack.pop()
+        writer.write("</$targetTag>")
+    }
+    return stack
+}
+
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
-    TODO()
+    val writer = File(outputName).bufferedWriter()
+    var tags = Stack<String>()
+    tags.push("p")
+    writer.write("<html>" + "<body>" + "<p>")
+    var starCounter = 0
+    var tildeCounter = 0
+    var tildeFlag = true
+
+    for (line in File(inputName).readLines()) {
+        if (line.isEmpty()) {
+            writer.write("</p>")
+            writer.write("<p>")
+        } else {
+            for (symbol in line) {
+                when (symbol) {
+                    '*' -> starCounter += 1
+                    '~' -> tildeCounter += 1
+                    else -> {
+                        when (starCounter) {
+                            3 -> if (tags.lastElement() == "p") {
+                                tags = tagsInStack("b", true, tags, writer)
+                                tags = tagsInStack("i", true, tags, writer)
+                            } else {
+                                tags = tagsInStack("b", false, tags, writer)
+                                tags = tagsInStack("i", false, tags, writer)
+                            }
+                            2 -> tags = if (tags.lastElement() != "b") tagsInStack("b", true, tags, writer)
+                            else tagsInStack("b", false, tags, writer)
+                            1 -> tags = if (tags.lastElement() != "i") tagsInStack("i", true, tags, writer)
+                            else tagsInStack("i", false, tags, writer)
+                        }
+                        starCounter = 0
+                        if (tildeCounter == 2) {
+                            tildeFlag = if (tildeFlag) {
+                                writer.write("<s>")
+                                false
+                            } else {
+                                writer.write("</s>")
+                                true
+                            }
+                            tildeCounter = 0
+                        }
+                        writer.write(symbol.toString())
+                    }
+                }
+            }
+        }
+    }
+    writer.write("</p>" + "</body>" + "</html>")
+    writer.close()
 }
 
 /**
@@ -363,65 +432,65 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
  *
  * Пример входного файла:
 ///////////////////////////////начало файла/////////////////////////////////////////////////////////////////////////////
-* Утка по-пекински
-    * Утка
-    * Соус
-* Салат Оливье
-    1. Мясо
-        * Или колбаса
-    2. Майонез
-    3. Картофель
-    4. Что-то там ещё
-* Помидоры
-* Фрукты
-    1. Бананы
-    23. Яблоки
-        1. Красные
-        2. Зелёные
+ * Утка по-пекински
+ * Утка
+ * Соус
+ * Салат Оливье
+1. Мясо
+ * Или колбаса
+2. Майонез
+3. Картофель
+4. Что-то там ещё
+ * Помидоры
+ * Фрукты
+1. Бананы
+23. Яблоки
+1. Красные
+2. Зелёные
 ///////////////////////////////конец файла//////////////////////////////////////////////////////////////////////////////
  *
  *
  * Соответствующий выходной файл:
 ///////////////////////////////начало файла/////////////////////////////////////////////////////////////////////////////
 <html>
-  <body>
-    <p>
-      <ul>
-        <li>
-          Утка по-пекински
-          <ul>
-            <li>Утка</li>
-            <li>Соус</li>
-          </ul>
-        </li>
-        <li>
-          Салат Оливье
-          <ol>
-            <li>Мясо
-              <ul>
-                <li>Или колбаса</li>
-              </ul>
-            </li>
-            <li>Майонез</li>
-            <li>Картофель</li>
-            <li>Что-то там ещё</li>
-          </ol>
-        </li>
-        <li>Помидоры</li>
-        <li>Фрукты
-          <ol>
-            <li>Бананы</li>
-            <li>Яблоки
-              <ol>
-                <li>Красные</li>
-                <li>Зелёные</li>
-              </ol>
-            </li>
-          </ol>
-        </li>
-      </ul>
-    </p>
-  </body>
+<body>
+<p>
+<ul>
+<li>
+Утка по-пекински
+<ul>
+<li>Утка</li>
+<li>Соус</li>
+</ul>
+</li>
+<li>
+Салат Оливье
+<ol>
+<li>Мясо
+<ul>
+<li>Или колбаса</li>
+</ul>
+</li>
+<li>Майонез</li>
+<li>Картофель</li>
+<li>Что-то там ещё</li>
+</ol>
+</li>
+<li>Помидоры</li>
+<li>Фрукты
+<ol>
+<li>Бананы</li>
+<li>Яблоки
+<ol>
+<li>Красные</li>
+<li>Зелёные</li>
+</ol>
+</li>
+</ol>
+</li>
+</ul>
+</p>
+</body>
 </html>
 ///////////////////////////////конец файла//////////////////////////////////////////////////////////////////////////////
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
@@ -442,29 +511,30 @@ fun markdownToHtml(inputName: String, outputName: String) {
     TODO()
 }
 
+
 /**
  * Средняя (12 баллов)
  *
  * Вывести в выходной файл процесс умножения столбиком числа lhv (> 0) на число rhv (> 0).
  *
  * Пример (для lhv == 19935, rhv == 111):
-   19935
-*    111
+19935
+ *    111
 --------
-   19935
+19935
 + 19935
 +19935
 --------
- 2212785
+2212785
  * Используемые пробелы, отступы и дефисы должны в точности соответствовать примеру.
  * Нули в множителе обрабатывать так же, как и остальные цифры:
-  235
-*  10
+235
+ *  10
 -----
-    0
+0
 +235
 -----
- 2350
+2350
  *
  */
 fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
@@ -478,16 +548,16 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
  * Вывести в выходной файл процесс деления столбиком числа lhv (> 0) на число rhv (> 0).
  *
  * Пример (для lhv == 19935, rhv == 22):
-  19935 | 22
- -198     906
- ----
-    13
-    -0
-    --
-    135
-   -132
-   ----
-      3
+19935 | 22
+-198     906
+----
+13
+-0
+--
+135
+-132
+----
+3
 
  * Используемые пробелы, отступы и дефисы должны в точности соответствовать примеру.
  *
