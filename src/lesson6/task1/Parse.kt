@@ -144,9 +144,10 @@ fun plusMinus(expression: String): Int {
     val signSet = setOf("+", "-")
     var flag = 1
 
-    if (positions[0] in signSet || positions[positions.lastIndex] in signSet ||
-            (positions[positions.lastIndex].length > 1 && positions[positions.lastIndex][0].toString() in signSet))
-        throw IllegalArgumentException()
+    if (positions[0] in signSet ||
+            positions[positions.lastIndex] in signSet ||
+            positions[positions.lastIndex].length > 1 && positions[positions.lastIndex][0].toString() in signSet
+    ) throw IllegalArgumentException()
     for (index in 0 until positions.size - 1) {
         val item = positions[index]
         val nextItem = positions[index + 1]
