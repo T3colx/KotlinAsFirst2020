@@ -353,12 +353,18 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
     var open3Flag = true
     var open2Flag = true
     var open1Flag = true
+    var paragraphFlag = false
 
     for (line in File(inputName).readLines()) {
         if (line.matches(Regex("""\s*"""))) {
-            writer.write("</p>")
-            writer.write("<p>")
+            paragraphFlag = true
+
         } else {
+            if (paragraphFlag) {
+                writer.write("</p>")
+                writer.write("<p>")
+                paragraphFlag = false
+            }
             for (symbol in line) {
                 when (symbol) {
                     '*' -> starCounter += 1
