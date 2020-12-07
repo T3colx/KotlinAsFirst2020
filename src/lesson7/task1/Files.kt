@@ -362,7 +362,6 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
             for (symbol in line) {
                 when (symbol) {
                     '*' -> starCounter += 1
-                    '~' -> tildeCounter += 1
                     else -> {
                         when (starCounter) {
                             3 -> if (open3Flag && open1Flag) {
@@ -390,18 +389,19 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
                             }
                         }
                         starCounter = 0
-                        if (tildeCounter == 2) {
-                            tildeFlag = if (tildeFlag) {
-                                writer.write("<s>")
-                                false
-                            } else {
-                                writer.write("</s>")
-                                true
-                            }
-                            tildeCounter = 0
-                        }
-                        writer.write(symbol.toString())
+                        if (symbol == '~') tildeCounter += 1
+                        else writer.write(symbol.toString())
                     }
+                }
+                if (tildeCounter == 2) {
+                    tildeFlag = if (tildeFlag) {
+                        writer.write("<s>")
+                        false
+                    } else {
+                        writer.write("</s>")
+                        true
+                    }
+                    tildeCounter = 0
                 }
             }
         }
