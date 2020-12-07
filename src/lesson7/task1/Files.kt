@@ -83,7 +83,6 @@ fun deleteMarked(inputName: String, outputName: String) {
 }
 
 
-
 /**
  * Средняя (14 баллов)
  *
@@ -93,7 +92,6 @@ fun deleteMarked(inputName: String, outputName: String) {
  * Регистр букв игнорировать, то есть буквы е и Е считать одинаковыми.
  *
  */
-
 
 
 fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> {
@@ -348,14 +346,16 @@ fun tagsInStack(targetTag: String, isOpening: Boolean, stack: Stack<String>, wri
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
     val writer = File(outputName).bufferedWriter()
     var tags = Stack<String>()
-    tags.push("p")
     writer.write("<html>" + "<body>" + "<p>")
     var starCounter = 0
     var tildeCounter = 0
     var tildeFlag = true
+    var open3Flag = true
+    var open2Flag = true
+    var open1Flag = true
 
     for (line in File(inputName).readLines()) {
-        if (line.isEmpty()) {
+        if (line.matches(Regex("""\s*"""))) {
             writer.write("</p>")
             writer.write("<p>")
         } else {
@@ -365,17 +365,29 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
                     '~' -> tildeCounter += 1
                     else -> {
                         when (starCounter) {
-                            3 -> if (tags.lastElement() == "p") {
+                            3 -> if (open3Flag && open1Flag) {
                                 tags = tagsInStack("b", true, tags, writer)
                                 tags = tagsInStack("i", true, tags, writer)
+                                open3Flag = false
                             } else {
                                 tags = tagsInStack("b", false, tags, writer)
                                 tags = tagsInStack("i", false, tags, writer)
+                                open3Flag = true
                             }
-                            2 -> tags = if (tags.lastElement() != "b") tagsInStack("b", true, tags, writer)
-                            else tagsInStack("b", false, tags, writer)
-                            1 -> tags = if (tags.lastElement() != "i") tagsInStack("i", true, tags, writer)
-                            else tagsInStack("i", false, tags, writer)
+                            2 -> if (open2Flag) {
+                                tags = tagsInStack("b", true, tags, writer)
+                                open2Flag = false
+                            } else {
+                                tags = tagsInStack("b", false, tags, writer)
+                                open2Flag = true
+                            }
+                            1 -> if (open1Flag) {
+                                tags = tagsInStack("i", true, tags, writer)
+                                open1Flag = false
+                            } else {
+                                tags = tagsInStack("i", false, tags, writer)
+                                open1Flag = true
+                            }
                         }
                         starCounter = 0
                         if (tildeCounter == 2) {
@@ -495,9 +507,38 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
 ///////////////////////////////конец файла//////////////////////////////////////////////////////////////////////////////
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
  */
+
+
 fun markdownToHtmlLists(inputName: String, outputName: String) {
-    TODO()
+    val writer = File(outputName).bufferedWriter()
+    var tags = Stack<String>()
+    tags.push("p")
+    writer.write("<html>" + "<body>" + "<p>")
+    var startIndex = 0
+    var index = 0
+    var existenceFlag = mutableListOf(true, false, false, false, false, false)
+    var lastSpaceCounter = -1
+    var spaceCounter = 0
+
+    for (line in File(inputName).readLines()) {
+        for (symbol in line) {
+            when (symbol) {
+                ' ' -> spaceCounter += 1
+                '*' -> {
+                    if (spaceCounter == lastSpaceCounter) continue
+                    else if (spaceCounter > lastSpaceCounter) TODO()
+                }
+                else -> writer.write(symbol.toString())
+            }
+
+
+        }
+
+    }
+    writer.write("</p>" + "</body>" + "</html>")
+    writer.close()
 }
+
 
 /**
  * Очень сложная (30 баллов)
