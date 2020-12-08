@@ -4,6 +4,7 @@ package lesson7.task1
 
 import java.io.BufferedWriter
 import java.io.File
+import java.lang.IllegalArgumentException
 import java.util.*
 
 // Урок 7: работа с файлами
@@ -346,7 +347,7 @@ fun tagsInStack(targetTag: String, isOpening: Boolean, stack: Stack<String>, wri
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
     val writer = File(outputName).bufferedWriter()
     var tags = Stack<String>()
-    writer.write("<html>" + "<body>" + "<p>")
+    writer.write("<html><body><p>")
     var starCounter = 0
     var tildeCounter = 0
     var tildeFlag = true
@@ -354,10 +355,11 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
     var open2Flag = true
     var open1Flag = true
     var paragraphFlag = false
+    var textEmpty = true
 
     for (line in File(inputName).readLines()) {
         if (line.matches(Regex("""\s*"""))) {
-            paragraphFlag = true
+            if (!textEmpty) paragraphFlag = true
 
         } else {
             if (paragraphFlag) {
@@ -410,9 +412,10 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
                     tildeCounter = 0
                 }
             }
+            textEmpty = false
         }
     }
-    writer.write("</p>" + "</body>" + "</html>")
+    writer.write("</p></body></html>")
     writer.close()
 }
 
@@ -518,8 +521,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
 fun markdownToHtmlLists(inputName: String, outputName: String) {
     val writer = File(outputName).bufferedWriter()
     var tags = Stack<String>()
-    tags.push("p")
-    writer.write("<html>" + "<body>" + "<p>")
+    writer.write("<html><body><p>")
     var startIndex = 0
     var index = 0
     var existenceFlag = mutableListOf(true, false, false, false, false, false)
@@ -541,7 +543,7 @@ fun markdownToHtmlLists(inputName: String, outputName: String) {
         }
 
     }
-    writer.write("</p>" + "</body>" + "</html>")
+    writer.write("</p></body></html>")
     writer.close()
 }
 
@@ -612,4 +614,5 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
 fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     TODO()
 }
+
 
