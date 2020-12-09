@@ -372,10 +372,11 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
                     '*' -> starCounter += 1
                     else -> {
                         when (starCounter) {
-                            3 -> if (open3Flag && open1Flag) {
+                            3 -> if (open3Flag || open1Flag && open2Flag) {
                                 tags = tagsInStack("b", true, tags, writer)
                                 tags = tagsInStack("i", true, tags, writer)
                                 open3Flag = false
+                                open1Flag = false
                             } else {
                                 tags = tagsInStack("b", false, tags, writer)
                                 tags = tagsInStack("i", false, tags, writer)
