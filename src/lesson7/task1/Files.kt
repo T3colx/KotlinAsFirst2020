@@ -358,7 +358,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
     var textEmpty = true
 
     for (line in File(inputName).readLines()) {
-        if (line.matches(Regex("""\s*"""))) {
+        if (line.matches(Regex("""(\s*)|(\n) """))) {
             if (!textEmpty) paragraphFlag = true
 
         } else {
@@ -416,6 +416,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
             textEmpty = false
         }
     }
+    while (!tags.isEmpty()) writer.write("</" + tags.pop() + ">")
     writer.write("</p></body></html>")
     writer.close()
 }
