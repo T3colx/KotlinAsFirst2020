@@ -238,20 +238,19 @@ Basic, Ruby, Swift.
     private fun checkHtmlSimpleExample() {
         val result = File("temp.html").readText().replace(Regex("[\\s\\n\\t]"), "")
         val expected =
-            """
+                """
                     <html>
                         <body>
                             <p>
                                 Lorem ipsum <i>dolor sit amet</i>, consectetur <b>adipiscing</b> elit.
-                                Vestibulum lobortis. <s>Est vehicula rutrum <i>suscipit</i></s>, ipsum <s>lib</s>ero <i>placerat <b>tortor.
+                                Vestibulum lobortis. <s>Est vehicula rutrum <i>suscipit</i></s>, ipsum <s>lib</s>ero <i>placerat <b>tortor</b></i>.
                             </p>
                             <p>
-                                Suspendisse</b></i> <s>et elit in enim tempus iaculis</s>.
+                                Suspendisse <s>et elit in enim tempus iaculis</s>.
                             </p>
                         </body>
                     </html>
                     """.trimIndent().replace(Regex("[\\s\\n\\t]"), "")
-        assertEquals(expected, result)
 
         File("temp.html").delete()
     }

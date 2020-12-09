@@ -386,8 +386,14 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
                                 tags = tagsInStack("b", true, tags, writer)
                                 open2Flag = false
                             } else {
-                                tags = tagsInStack("b", false, tags, writer)
-                                open2Flag = true
+                                if (open1Flag) {
+                                    writer.write("</i><i>")
+                                    open1Flag = true
+                                } else {
+                                    tags = tagsInStack("b", false, tags, writer)
+                                    open2Flag = true
+                                }
+
                             }
                             1 -> if (open1Flag) {
                                 tags = tagsInStack("i", true, tags, writer)
@@ -416,7 +422,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
             textEmpty = false
         }
     }
-    while (!tags.isEmpty()) writer.write("</" + tags.pop() + ">")
+
     writer.write("</p></body></html>")
     writer.close()
 }
