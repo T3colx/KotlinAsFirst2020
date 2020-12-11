@@ -364,45 +364,38 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
                 writer.write("<p>")
                 paragraphFlag = false
             }
-            for (symbol in line) {
-                print(symbol)
-                when (symbol) {
-                    '*' -> starCounter += 1
-                    else -> {
-                        when (starCounter) {
-                            3 -> if (tags.isEmpty()) {
-                                tags = tagsInStack("b", true, tags, writer)
-                                tags = tagsInStack("i", true, tags, writer)
+            var index = 0
+            while (index < line.length) {
+                val symbol = line[index]
+                val secondSymbol = if (index + 1 < line.length) line[index + 1]
+                else 0
+                val thirdSymbol = if (index + 2 < line.length) line[index + 2]
+                else 0
 
-                            } else {
-                                tags = tagsInStack("b", false, tags, writer)
-                                tags = tagsInStack("i", false, tags, writer)
-
-                            }
-                            2 -> if (tags.isEmpty() || tags.lastElement() != "b") {
-                                tags = tagsInStack("b", true, tags, writer)
-
-                            } else {
-                                if (tags.lastElement() == "i") {
-                                    writer.write("</i><i>")
-                                } else {
-                                    tags = tagsInStack("b", false, tags, writer)
-                                }
-
-                            }
-                            1 -> tags = if (tags.isEmpty() || tags.lastElement() != "i") {
-                                tagsInStack("i", true, tags, writer)
-                            } else {
-                                tagsInStack("i", false, tags, writer)
-                            }
-                        }
-                        starCounter = 0
-                        if (symbol == '~') tildeCounter += 1
-                        else writer.write(symbol.toString())
-
+                if (symbol == '*' && secondSymbol == '*' && thirdSymbol == '*') {
+                    if (tags.isEmpty()) {
+                        tags = tagsInStack("b", true, tags, writer)
+                        tags = tagsInStack("i", true, tags, writer)
+                    } else {
+                        tags = tagsInStack("b", false, tags, writer)
+                        tags = tagsInStack("i", false, tags, writer)
                     }
-                }
-                if (tildeCounter == 2) {
+                    index += 2
+                } else if (symbol == '*' && secondSymbol == '*') {
+                    if (tags.isEmpty() || tags.lastElement() != "b") {
+                        tags = tagsInStack("b", true, tags, writer)
+                    } else {
+                        if (tags.lastElement() == "i") {
+                            writer.write("</i><i>")
+                        } else {
+                            tags = tagsInStack("b", false, tags, writer)
+                        }
+                    }
+                    index++
+                } else if (symbol == '*') {
+                    tags = if (tags.isEmpty() || tags.lastElement() != "i") tagsInStack("i", true, tags, writer)
+                    else tagsInStack("i", false, tags, writer)
+                } else if (symbol == '~' && secondSymbol == '~') {
                     tildeFlag = if (tildeFlag) {
                         writer.write("<s>")
                         false
@@ -410,11 +403,10 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
                         writer.write("</s>")
                         true
                     }
-                    tildeCounter = 0
+                    index++
                 }
+                index++
             }
-            if (!tags.isEmpty()) writer.write("</" + tags.pop() + ">")
-            textEmpty = false
         }
     }
 
