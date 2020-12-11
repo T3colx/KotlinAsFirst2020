@@ -351,9 +351,6 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
     var starCounter = 0
     var tildeCounter = 0
     var tildeFlag = true
-    var open3Flag = true
-    var open2Flag = true
-    var open1Flag = true
     var paragraphFlag = false
     var textEmpty = true
 
@@ -368,44 +365,41 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
                 paragraphFlag = false
             }
             for (symbol in line) {
+                print(symbol)
                 when (symbol) {
                     '*' -> starCounter += 1
                     else -> {
                         when (starCounter) {
-                            3 -> if (open3Flag || open1Flag && open2Flag) {
+                            3 -> if (tags.isEmpty()) {
                                 tags = tagsInStack("b", true, tags, writer)
                                 tags = tagsInStack("i", true, tags, writer)
-                                open3Flag = false
-                                open1Flag = false
+
                             } else {
                                 tags = tagsInStack("b", false, tags, writer)
                                 tags = tagsInStack("i", false, tags, writer)
-                                open3Flag = true
+
                             }
-                            2 -> if (open2Flag) {
+                            2 -> if (tags.isEmpty() || tags.lastElement() != "b") {
                                 tags = tagsInStack("b", true, tags, writer)
-                                open2Flag = false
+
                             } else {
-                                if (open1Flag) {
+                                if (tags.lastElement() == "i") {
                                     writer.write("</i><i>")
-                                    open1Flag = true
                                 } else {
                                     tags = tagsInStack("b", false, tags, writer)
-                                    open2Flag = true
                                 }
 
                             }
-                            1 -> if (open1Flag) {
-                                tags = tagsInStack("i", true, tags, writer)
-                                open1Flag = false
+                            1 -> tags = if (tags.isEmpty() || tags.lastElement() != "i") {
+                                tagsInStack("i", true, tags, writer)
                             } else {
-                                tags = tagsInStack("i", false, tags, writer)
-                                open1Flag = true
+                                tagsInStack("i", false, tags, writer)
                             }
                         }
                         starCounter = 0
                         if (symbol == '~') tildeCounter += 1
                         else writer.write(symbol.toString())
+                        if (!tags.isEmpty()) writer.write("<" + tags.pop() + "/>")
                     }
                 }
                 if (tildeCounter == 2) {
