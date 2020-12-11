@@ -399,7 +399,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
                         starCounter = 0
                         if (symbol == '~') tildeCounter += 1
                         else writer.write(symbol.toString())
-                        if (!tags.isEmpty()) writer.write("</" + tags.pop() + ">")
+
                     }
                 }
                 if (tildeCounter == 2) {
@@ -413,6 +413,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
                     tildeCounter = 0
                 }
             }
+            if (!tags.isEmpty()) writer.write("</" + tags.pop() + ">")
             textEmpty = false
         }
     }
