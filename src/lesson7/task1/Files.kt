@@ -406,6 +406,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
                     index++
                 } else writer.write(symbol.toString())
                 index++
+                textEmpty = false
             }
         }
     }
