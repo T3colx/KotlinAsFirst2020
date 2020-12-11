@@ -348,16 +348,13 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
     val writer = File(outputName).bufferedWriter()
     var tags = Stack<String>()
     writer.write("<html><body><p>")
-    var starCounter = 0
-    var tildeCounter = 0
     var tildeFlag = true
     var paragraphFlag = false
     var textEmpty = true
 
     for (line in File(inputName).readLines()) {
-        if (line.matches(Regex("""(\s*)|(\n) """))) {
+        if (line.matches(Regex("""(\s*)|(\n)"""))) {
             if (!textEmpty) paragraphFlag = true
-
         } else {
             if (paragraphFlag) {
                 writer.write("</p>")
