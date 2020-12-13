@@ -18,8 +18,8 @@ class Tests {
     fun alignFile() {
         alignFile("input/align_in1.txt", 50, "temp.txt")
         assertFileContent(
-            "temp.txt",
-            """Для написания разных видов программ сейчас
+                "temp.txt",
+                """Для написания разных видов программ сейчас
 применяются разные языки программирования.
 Например, в сфере мобильных программ сейчас правят
 бал языки Swift (мобильные устройства под
@@ -40,7 +40,6 @@ Java (в сложных случаях), а также Python и PHP (в
 операционной системы. В первую очередь следует
 назвать языки Java, {cpp}, C#, Python, Visual
 Basic, Ruby, Swift.
-
 Самым универсальным и одновременно самым
 распространённым языком программирования на данный
 момент следует считать язык Java. Java в широком
@@ -62,32 +61,28 @@ Basic, Ruby, Swift.
     fun deleteMarked() {
         deleteMarked("input/delete_in1.txt", "temp.txt")
         assertFileContent(
-            "temp.txt",
-            """Задачи _надо_ решать правильно,
-
+                "temp.txt",
+                """Задачи _надо_ решать правильно,
 и не надо при этом никуда торопиться___
             """.trimIndent()
         )
-
+        File("temp.txt").delete()
     }
 
     @Test
     @Tag("14")
     fun countSubstrings() {
-
         assertEquals(
-            mapOf("РАЗНЫЕ" to 2, "ные" to 2, "Неряшливость" to 1, "е" to 49, "эволюция" to 0),
-            countSubstrings("input/substrings_in1.txt", listOf("РАЗНЫЕ", "ные", "Неряшливость", "е", "эволюция"))
+                mapOf("РАЗНЫЕ" to 2, "ные" to 2, "Неряшливость" to 1, "е" to 49, "эволюция" to 0),
+                countSubstrings("input/substrings_in1.txt", listOf("РАЗНЫЕ", "ные", "Неряшливость", "е", "эволюция"))
         )
         assertEquals(
-            mapOf("Карминовый" to 2, "Некрасивый" to 2, "белоглазый" to 1),
-            countSubstrings("input/substrings_in1.txt", listOf("Карминовый", "Некрасивый", "белоглазый"))
+                mapOf("Карминовый" to 2, "Некрасивый" to 2, "белоглазый" to 1),
+                countSubstrings("input/substrings_in1.txt", listOf("Карминовый", "Некрасивый", "белоглазый"))
         )
-
-
         assertEquals(
-            mapOf("--" to 4, "ее" to 2, "животное" to 2, "." to 2),
-            countSubstrings("input/substrings_in2.txt", listOf("--", "ее", "животное", "."))
+                mapOf("--" to 4, "ее" to 2, "животное" to 2, "." to 2),
+                countSubstrings("input/substrings_in2.txt", listOf("--", "ее", "животное", "."))
         )
     }
 
@@ -96,8 +91,8 @@ Basic, Ruby, Swift.
     fun sibilants() {
         sibilants("input/sibilants_in1.txt", "temp.txt")
         assertFileContent(
-            "temp.txt",
-            """/**
+                "temp.txt",
+                """/**
  * Простая
  *
  * В русском языке, как правило, после букв Ж, Ч, Ш, Щ пишется И, А, У, а не Ы, Я, Ю.
@@ -120,12 +115,12 @@ Basic, Ruby, Swift.
     fun centerFile() {
         centerFile("input/center_in1.txt", "temp.txt")
         assertFileContent(
-            "temp.txt",
-            """              Съешь же ещё этих мягких французских булок, да выпей чаю.
+                "temp.txt",
+                """              Съешь же ещё этих мягких французских булок, да выпей чаю.
 Широкая электрификация южных губерний даст мощный толчок подъёму сельского хозяйства.
                                         Тест
                                           """ +  // Avoiding trailing whitespaces problem
-                    """
+                        """
                                      Hello World
            Во входном файле с именем inputName содержится некоторый текст.
         Вывести его в выходной файл с именем outputName, выровняв по центру."""
@@ -139,21 +134,17 @@ Basic, Ruby, Swift.
     fun alignFileByWidth() {
         alignFileByWidth("input/width_in1.txt", "temp.txt")
         assertFileContent(
-            "temp.txt",
-            """Простая
-
+                "temp.txt",
+                """Простая
 Во       входном       файле       с       именем       inputName       содержится       некоторый      текст.
 Вывести   его  в  выходной  файл  с  именем  outputName,  выровняв  по  левому  и  правому  краю  относительно
 самой                                              длинной                                             строки.
 Выравнивание   производить,   вставляя  дополнительные  пробелы  между  словами:  равномерно  по  всей  строке
-
 Слова     внутри     строки     отделяются     друг     от     друга     одним     или     более     пробелом.
-
 Следующие                   правила                   должны                  быть                  выполнены:
 1)     Каждая     строка     входного    и    выходного    файла    не    должна    заканчиваться    пробелом.
 2) Пустые строки или строки из пробелов во входном файле должны превратиться в пустые строки в выходном файле.
 3)   Число   строк   в   выходном  файле  должно  быть  равно  числу  строк  во  входном  (в  т.  ч.  пустых).
-
 Равномерность              определяется              следующими             формальными             правилами:
 1)  Число  пробелов  между  каждыми  двумя  парами  соседних  слов  не  должно  отличаться  более,  чем  на 1.
 2)  Число  пробелов  между  более  левой  парой  соседних  слов  должно  быть  больше или равно числу пробелов
@@ -168,41 +159,41 @@ Basic, Ruby, Swift.
     fun top20Words() {
         assertEquals(mapOf<String, Int>(), top20Words("input/empty.txt"))
         assertEquals(mapOf(
-            "привет" to 4,
-            "все" to 3,
-            "и" to 3,
-            "прямо" to 3,
-            "всё" to 2,
-            "let" to 2,
-            "us" to 2,
-            "write" to 2,
-            "some" to 2,
-            "digits" to 2
+                "привет" to 4,
+                "все" to 3,
+                "и" to 3,
+                "прямо" to 3,
+                "всё" to 2,
+                "let" to 2,
+                "us" to 2,
+                "write" to 2,
+                "some" to 2,
+                "digits" to 2
         ), top20Words("input/top20.txt").filter { it.value > 1 })
         assertEquals(
-            mapOf(
-                "и" to 1106,
-                "в" to 674,
-                "не" to 411,
-                "он" to 306,
-                "на" to 290,
-                "я" to 261,
-                "с" to 261,
-                "как" to 211,
-                "но" to 210,
-                "что" to 187,
-                "все" to 131,
-                "к" to 130,
-                "она" to 126,
-                "его" to 109,
-                "за" to 105,
-                "то" to 104,
-                "а" to 98,
-                "ее" to 95,
-                "мне" to 95,
-                "уж" to 95,
-                "ей" to 95
-            ), top20Words("input/onegin.txt")
+                mapOf(
+                        "и" to 1106,
+                        "в" to 674,
+                        "не" to 411,
+                        "он" to 306,
+                        "на" to 290,
+                        "я" to 261,
+                        "с" to 261,
+                        "как" to 211,
+                        "но" to 210,
+                        "что" to 187,
+                        "все" to 131,
+                        "к" to 130,
+                        "она" to 126,
+                        "его" to 109,
+                        "за" to 105,
+                        "то" to 104,
+                        "а" to 98,
+                        "ее" to 95,
+                        "мне" to 95,
+                        "уж" to 95,
+                        "ей" to 95
+                ), top20Words("input/onegin.txt")
         )
     }
 
@@ -210,17 +201,17 @@ Basic, Ruby, Swift.
     @Tag("14")
     fun transliterate() {
         transliterate(
-            "input/trans_in1.txt",
-            mapOf('з' to "zz", 'р' to "r", 'д' to "d", 'й' to "y", 'М' to "m", 'и' to "yy", '!' to "!!!"),
-            "temp.txt"
+                "input/trans_in1.txt",
+                mapOf('з' to "zz", 'р' to "r", 'д' to "d", 'й' to "y", 'М' to "m", 'и' to "yy", '!' to "!!!"),
+                "temp.txt"
         )
         assertFileContent("temp.txt", "Zzdrавствуy,\nmyyr!!!")
         File("temp.txt").delete()
 
         transliterate(
-            "input/trans_in1.txt",
-            mapOf('з' to "zZ", 'р' to "r", 'д' to "d", 'й' to "y", 'М' to "m", 'и' to "YY", '!' to "!!!"),
-            "temp.txt"
+                "input/trans_in1.txt",
+                mapOf('з' to "zZ", 'р' to "r", 'д' to "d", 'й' to "y", 'М' to "m", 'и' to "YY", '!' to "!!!"),
+                "temp.txt"
         )
         assertFileContent("temp.txt", "Zzdrавствуy,\nmyyr!!!")
         File("temp.txt").delete()
@@ -251,6 +242,7 @@ Basic, Ruby, Swift.
                         </body>
                     </html>
                     """.trimIndent().replace(Regex("[\\s\\n\\t]"), "")
+        assertEquals(expected, result)
 
         File("temp.html").delete()
     }
@@ -265,7 +257,7 @@ Basic, Ruby, Swift.
     private fun checkHtmlListsExample() {
         val result = File("temp.html").readText().replace(Regex("[\\s\\n\\t]"), "")
         val expected =
-            """
+                """
                     <html>
                       <body>
                         <p>
@@ -320,10 +312,10 @@ Basic, Ruby, Swift.
     @Test
     @Tag("30")
     fun markdownToHtml() {
-        markdownToHtml("input/markdown_simple.md", "temp.html"); println("passed\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n")
+        markdownToHtml("input/markdown_simple.md", "temp.html")
         checkHtmlSimpleExample()
 
-        markdownToHtml("input/markdown_lists.md", "temp.html"); println("passed\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n")
+        markdownToHtml("input/markdown_lists.md", "temp.html")
         checkHtmlListsExample()
     }
 
@@ -337,9 +329,9 @@ Basic, Ruby, Swift.
         }
 
         test(
-            19935,
-            111,
-            """
+                19935,
+                111,
+                """
                 19935
              *    111
              --------
@@ -352,9 +344,9 @@ Basic, Ruby, Swift.
         )
 
         test(
-            12345,
-            76,
-            """
+                12345,
+                76,
+                """
                12345
              *    76
              -------
@@ -366,9 +358,9 @@ Basic, Ruby, Swift.
         )
 
         test(
-            12345,
-            6,
-            """
+                12345,
+                6,
+                """
               12345
              *    6
              ------
@@ -391,9 +383,9 @@ Basic, Ruby, Swift.
         }
 
         test(
-            19935,
-            22,
-            """
+                19935,
+                22,
+                """
               19935 | 22
              -198     906
              ----
@@ -408,9 +400,9 @@ Basic, Ruby, Swift.
         )
 
         test(
-            2,
-            20,
-            """
+                2,
+                20,
+                """
               2 | 20
              -0   0
              --
@@ -419,9 +411,9 @@ Basic, Ruby, Swift.
         )
 
         test(
-            99999,
-            1,
-            """
+                99999,
+                1,
+                """
               99999 | 1
              -9       99999
              --

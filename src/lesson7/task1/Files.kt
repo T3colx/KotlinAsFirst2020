@@ -333,14 +333,10 @@ Suspendisse <s>et elit in enim tempus iaculis</s>.
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
  */
 
+
 fun tagsInStack(targetTag: String, isOpening: Boolean, stack: Stack<String>, writer: BufferedWriter): Stack<String> {
-    if (isOpening) {
-        stack.push(targetTag)
-        writer.write("<$targetTag>")
-    } else {
-        stack.pop()
-        writer.write("</$targetTag>")
-    }
+    if (isOpening) writer.write("<" + stack.push(targetTag) + ">")
+    else writer.write("</" + stack.pop() + ">")
     return stack
 }
 
@@ -514,28 +510,37 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
 fun markdownToHtmlLists(inputName: String, outputName: String) {
     val writer = File(outputName).bufferedWriter()
     var tags = Stack<String>()
-    writer.write("<html><body><p>")
-    var startIndex = 0
-    var index = 0
-    var existenceFlag = mutableListOf(true, false, false, false, false, false)
     var lastSpaceCounter = -1
-    var spaceCounter = 0
+    writer.write("<html><body><p>")
+
 
     for (line in File(inputName).readLines()) {
-        for (symbol in line) {
-            when (symbol) {
-                ' ' -> spaceCounter += 1
-                '*' -> {
-                    if (spaceCounter == lastSpaceCounter) continue
-                    else if (spaceCounter > lastSpaceCounter) TODO()
-                }
-                else -> writer.write(symbol.toString())
+        var index = 0
+        while (line[index] == ' ') index += 4
+        var spaceCounter = index
+
+        if (spaceCounter > lastSpaceCounter) {
+            if (line[index] == '*') tagsInStack("ul", true, tags, writer)
+            else tagsInStack("ol", true, tags, writer)
+        } else if (spaceCounter < lastSpaceCounter) {
+            for (reps in 1..((lastSpaceCounter - spaceCounter) / 4)) {
+                tagsInStack("lastTag", false, tags, writer)
+                tagsInStack("lastTag", false, tags, writer)
+                tagsInStack("lastTag", false, tags, writer)
             }
+        } else tagsInStack("/li", false, tags, writer)
 
-
+        tagsInStack("li", true, tags, writer)
+        lastSpaceCounter = spaceCounter
+        while (line[index] != ' ') index++
+        while (index < line.length) {
+            writer.write(line[index].toString())
+            index++
         }
-
     }
+
+
+    while (!tags.isEmpty()) tagsInStack("closeAllTags", false, tags, writer)
     writer.write("</p></body></html>")
     writer.close()
 }
