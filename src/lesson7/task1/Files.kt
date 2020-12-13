@@ -509,7 +509,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
 
 fun markdownToHtmlLists(inputName: String, outputName: String) {
     val writer = File(outputName).bufferedWriter()
-    var tags = Stack<String>()
+    val tags = Stack<String>()
     var lastSpaceCounter = -1
     writer.write("<html><body><p>")
 
@@ -517,7 +517,7 @@ fun markdownToHtmlLists(inputName: String, outputName: String) {
     for (line in File(inputName).readLines()) {
         var index = 0
         while (line[index] == ' ') index += 4
-        var spaceCounter = index
+        val spaceCounter = index
 
         if (spaceCounter > lastSpaceCounter) {
             if (line[index] == '*') tagsInStack("ul", true, tags, writer)
