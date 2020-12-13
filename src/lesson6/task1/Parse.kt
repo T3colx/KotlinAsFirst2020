@@ -152,8 +152,8 @@ fun plusMinus(expression: String): Int {
         val item = positions[index]
         val nextItem = positions[index + 1]
         if ((item in signSet) == (nextItem in signSet) ||
-                (item.length > 1 && item[0].toString() in signSet) ||
-                (item.length > 1 && item[item.lastIndex].toString() in signSet))
+                item.length > 1 && item[0].toString() in signSet ||
+                item.length > 1 && item[item.lastIndex].toString() in signSet)
             throw IllegalArgumentException()
         if (item !in signSet) {
             result += item.toInt() * flag
