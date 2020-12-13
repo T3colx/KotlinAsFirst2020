@@ -2,9 +2,8 @@
 
 package lesson7.task1
 
-import java.io.BufferedWriter
 import java.io.File
-import java.lang.IllegalArgumentException
+import java.lang.StringBuilder
 import java.util.*
 
 // Урок 7: работа с файлами
@@ -67,16 +66,7 @@ fun alignFile(inputName: String, lineLength: Int, outputName: String) {
  * Подчёркивание в середине и/или в конце строк значения не имеет.
  */
 fun deleteMarked(inputName: String, outputName: String) {
-    val writer = File(outputName).bufferedWriter()
-
-    for (line in File(inputName).readLines()) {
-        if (!line.startsWith('_')) {
-            writer.write(line)
-            writer.newLine()
-        }
-    }
-    writer.close()
-
+    TODO()
 }
 
 
@@ -330,19 +320,71 @@ Suspendisse <s>et elit in enim tempus iaculis</s>.
  */
 
 
-fun tagsInStack(targetTag: String, isOpening: Boolean, stack: Stack<String>, writer: BufferedWriter): Stack<String> {
-    if (isOpening) writer.write("<" + stack.push(targetTag) + ">")
-    else writer.write("</" + stack.pop() + ">")
-    return stack
+fun tagsInStack(targetTag: String, isOpening: Boolean, stack: Stack<String>, outputString: StringBuilder) {
+    if (isOpening) outputString.append("<" + stack.push(targetTag) + ">")
+    else outputString.append("</" + stack.pop() + ">")
+}
+
+var textEmpty = true
+var tagsSimple = Stack<String>()
+var tildeFlag = true
+var paragraphFlag = false
+
+fun lineHandlerSimple(line: String, inputIndex: Int): String {
+    val outputString = StringBuilder()
+    if (line.matches(Regex("""(\s*)|(\n)"""))) {
+        if (!textEmpty) paragraphFlag = true
+    } else {
+        if (paragraphFlag) {
+            outputString.append("</p>")
+            outputString.append("<p>")
+            paragraphFlag = false
+        }
+        var index = inputIndex
+        while (index < line.length) {
+            val symbol = line[index]
+            val secondSymbol = if (index + 1 < line.length) line[index + 1]
+            else 0
+            val thirdSymbol = if (index + 2 < line.length) line[index + 2]
+            else 0
+
+            if (symbol == '*' && secondSymbol == '*' && thirdSymbol == '*') {
+                if (tagsSimple.isEmpty()) {
+                    tagsInStack("b", true, tagsSimple, outputString)
+                    tagsInStack("i", true, tagsSimple, outputString)
+                } else {
+                    tagsInStack("b", false, tagsSimple, outputString)
+                    tagsInStack("i", false, tagsSimple, outputString)
+                }
+                index += 2
+            } else if (symbol == '*' && secondSymbol == '*') {
+                if (tagsSimple.isEmpty() || tagsSimple.lastElement() != "b") {
+                    tagsInStack("b", true, tagsSimple, outputString)
+                } else tagsInStack("b", false, tagsSimple, outputString)
+                index++
+            } else if (symbol == '*') {
+                if (tagsSimple.isEmpty() || tagsSimple.lastElement() != "i") tagsInStack("i", true, tagsSimple, outputString)
+                else tagsInStack("i", false, tagsSimple, outputString)
+            } else if (symbol == '~' && secondSymbol == '~') {
+                tildeFlag = if (tildeFlag) {
+                    outputString.append("<s>")
+                    false
+                } else {
+                    outputString.append("</s>")
+                    true
+                }
+                index++
+            } else outputString.append(symbol.toString())
+            index++
+            textEmpty = false
+        }
+    }
+    return outputString.toString()
 }
 
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
     val writer = File(outputName).bufferedWriter()
-    var tags = Stack<String>()
     writer.write("<html><body><p>")
-    var tildeFlag = true
-    var paragraphFlag = false
-    var textEmpty = true
 
     for (line in File(inputName).readLines()) {
         if (line.matches(Regex("""(\s*)|(\n)"""))) {
@@ -353,50 +395,17 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
                 writer.write("<p>")
                 paragraphFlag = false
             }
-            var index = 0
-            while (index < line.length) {
-                val symbol = line[index]
-                val secondSymbol = if (index + 1 < line.length) line[index + 1]
-                else 0
-                val thirdSymbol = if (index + 2 < line.length) line[index + 2]
-                else 0
-
-                if (symbol == '*' && secondSymbol == '*' && thirdSymbol == '*') {
-                    if (tags.isEmpty()) {
-                        tags = tagsInStack("b", true, tags, writer)
-                        tags = tagsInStack("i", true, tags, writer)
-                    } else {
-                        tags = tagsInStack("b", false, tags, writer)
-                        tags = tagsInStack("i", false, tags, writer)
-                    }
-                    index += 2
-                } else if (symbol == '*' && secondSymbol == '*') {
-                    tags = if (tags.isEmpty() || tags.lastElement() != "b") {
-                        tagsInStack("b", true, tags, writer)
-                    } else tagsInStack("b", false, tags, writer)
-                    index++
-                } else if (symbol == '*') {
-                    tags = if (tags.isEmpty() || tags.lastElement() != "i") tagsInStack("i", true, tags, writer)
-                    else tagsInStack("i", false, tags, writer)
-                } else if (symbol == '~' && secondSymbol == '~') {
-                    tildeFlag = if (tildeFlag) {
-                        writer.write("<s>")
-                        false
-                    } else {
-                        writer.write("</s>")
-                        true
-                    }
-                    index++
-                } else writer.write(symbol.toString())
-                index++
-                textEmpty = false
-            }
+            writer.write(lineHandlerSimple(line, 0))
         }
     }
 
     writer.write("</p></body></html>")
     writer.close()
+    textEmpty = true
+    tildeFlag = true
+    paragraphFlag = false
 }
+
 
 /**
  * Сложная (23 балла)
@@ -495,42 +504,51 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
 ///////////////////////////////конец файла//////////////////////////////////////////////////////////////////////////////
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
  */
+var lastSpaceCounter = -1
+val tagsList = Stack<String>()
 
+
+fun lineHandlerList(line: String): Pair<String, Int> {
+    var index = 0
+    val outputString = StringBuilder()
+    if (line.contains(Regex("""^(\s*)((\*\s)|((\d)+\.\s))"""))) {
+        while (line[index] == ' ') index += 4
+        val spaceCounter = index
+        if (spaceCounter > lastSpaceCounter) {
+            if (line[index] == '*') tagsInStack("ul", true, tagsList, outputString)
+            else tagsInStack("ol", true, tagsList, outputString)
+        } else if (spaceCounter < lastSpaceCounter) {
+            for (reps in 1..((lastSpaceCounter - spaceCounter) / 4)) {
+                tagsInStack("lastTag", false, tagsList, outputString)
+                tagsInStack("lastTag", false, tagsList, outputString)
+                tagsInStack("lastTag", false, tagsList, outputString)
+            }
+        } else tagsInStack("/li", false, tagsList, outputString)
+        while (line[index] != ' ') index++
+        tagsInStack("li", true, tagsList, outputString)
+        lastSpaceCounter = spaceCounter
+    }
+    return Pair(outputString.toString(), index)
+}
 
 fun markdownToHtmlLists(inputName: String, outputName: String) {
     val writer = File(outputName).bufferedWriter()
-    val tags = Stack<String>()
-    var lastSpaceCounter = -1
     writer.write("<html><body><p>")
 
-
     for (line in File(inputName).readLines()) {
-        var index = 0
-        while (line[index] == ' ') index += 4
-        val spaceCounter = index
+        val results = lineHandlerList(line)
+        writer.write(results.first)
+        var index = results.second
 
-        if (spaceCounter > lastSpaceCounter) {
-            if (line[index] == '*') tagsInStack("ul", true, tags, writer)
-            else tagsInStack("ol", true, tags, writer)
-        } else if (spaceCounter < lastSpaceCounter) {
-            for (reps in 1..((lastSpaceCounter - spaceCounter) / 4)) {
-                tagsInStack("lastTag", false, tags, writer)
-                tagsInStack("lastTag", false, tags, writer)
-                tagsInStack("lastTag", false, tags, writer)
-            }
-        } else tagsInStack("/li", false, tags, writer)
-
-        tagsInStack("li", true, tags, writer)
-        lastSpaceCounter = spaceCounter
-        while (line[index] != ' ') index++
         while (index < line.length) {
             writer.write(line[index].toString())
             index++
         }
     }
+    val outputString = StringBuilder()
 
-
-    while (!tags.isEmpty()) tagsInStack("closeAllTags", false, tags, writer)
+    while (!tagsList.isEmpty()) tagsInStack("closeAllTags", false, tagsList, outputString)
+    writer.write(outputString.toString())
     writer.write("</p></body></html>")
     writer.close()
 }
@@ -545,7 +563,35 @@ fun markdownToHtmlLists(inputName: String, outputName: String) {
  *
  */
 fun markdownToHtml(inputName: String, outputName: String) {
-    TODO()
+    val writer = File(outputName).bufferedWriter()
+    writer.write("<html><body><p>")
+    for (line in File(inputName).readLines()) {
+        var formattedLine: String
+        if (line.matches(Regex("""(\s*)|(\n)"""))) {
+            if (!textEmpty) paragraphFlag = true
+        } else {
+            if (paragraphFlag) {
+                writer.write("</p>")
+                writer.write("<p>")
+                paragraphFlag = false
+            }
+            val results = lineHandlerList(line)
+            formattedLine = results.first
+            formattedLine += lineHandlerSimple(line, results.second)
+            writer.write(formattedLine)
+        }
+    }
+    val outputString = StringBuilder()
+    while (!tagsList.isEmpty()) tagsInStack("closeAllTags", false, tagsList, outputString)
+    writer.write(outputString.toString())
+    writer.write("</p></body></html>")
+    writer.close()
+    lastSpaceCounter = -1
+    textEmpty = true
+    tagsSimple = Stack<String>()
+    tildeFlag = true
+    paragraphFlag = false
+
 }
 
 
