@@ -375,15 +375,9 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
                     }
                     index += 2
                 } else if (symbol == '*' && secondSymbol == '*') {
-                    if (tags.isEmpty() || tags.lastElement() != "b") {
-                        tags = tagsInStack("b", true, tags, writer)
-                    } else {
-                        if (tags.lastElement() == "i") {
-                            writer.write("</i><i>")
-                        } else {
-                            tags = tagsInStack("b", false, tags, writer)
-                        }
-                    }
+                    tags = if (tags.isEmpty() || tags.lastElement() != "b") {
+                        tagsInStack("b", true, tags, writer)
+                    } else tagsInStack("b", false, tags, writer)
                     index++
                 } else if (symbol == '*') {
                     tags = if (tags.isEmpty() || tags.lastElement() != "i") tagsInStack("i", true, tags, writer)
