@@ -194,15 +194,7 @@ class UnsignedBigInteger : Comparable<UnsignedBigInteger> {
     /**
      * Сравнение на равенство (по контракту Any.equals)
      */
-    override fun equals(other: Any?): Boolean {
-        var loopBool = false
-        if (other is UnsignedBigInteger && number.size == other.number.size) {
-            loopBool = true
-            for (index in number.size - 1 downTo 0)
-                loopBool = loopBool && number[index] == other.number[index]
-        }
-        return loopBool
-    }
+    override fun equals(other: Any?): Boolean = other is UnsignedBigInteger && this.compareTo(other) == 0
 
 
     /**
