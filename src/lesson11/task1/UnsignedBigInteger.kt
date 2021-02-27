@@ -25,7 +25,9 @@ class UnsignedBigInteger : Comparable<UnsignedBigInteger> {
     var number = mutableListOf<Int>()
 
     constructor(s: String) {
-        for (index in s.length - 1 downTo 0) number.add(getNumericValue(s[index]))
+        if (s.matches(Regex("""^[0-9]+$"""))) {
+            for (index in s.length - 1 downTo 0) number.add(getNumericValue(s[index]))
+        } else throw ArithmeticException("Not a number")
     }
 
 
@@ -34,14 +36,15 @@ class UnsignedBigInteger : Comparable<UnsignedBigInteger> {
      */
     constructor(i: Int) {
         var integer = i
-        if (i == 0) number.add(0)
-        else while (integer != 0) {
-            number.add(integer % 10)
-            integer /= 10
+        when {
+            i < 0 -> throw ArithmeticException("Val cannot be negative")
+            i == 0 -> number.add(0)
+            else -> while (integer != 0) {
+                number.add(integer % 10)
+                integer /= 10
+            }
         }
     }
-
-    //
 
     constructor(list: MutableList<Int>) {
         number = list
@@ -92,16 +95,9 @@ class UnsignedBigInteger : Comparable<UnsignedBigInteger> {
     operator fun minus(other: UnsignedBigInteger): UnsignedBigInteger {
         val resultNumber = mutableListOf<Int>()
         var inMem = 0
-        val longerNumber: MutableList<Int>
-        val shorterNumber: MutableList<Int>
-        if (this < other) throw ArithmeticException()
-        if (number.size >= other.number.size) {
-            longerNumber = number
-            shorterNumber = other.number
-        } else {
-            longerNumber = other.number
-            shorterNumber = number
-        }
+        if (this < other) throw ArithmeticException("Cannot subtract from a smaller number")
+        val longerNumber = number
+        val shorterNumber = other.number
         fun difference(oldDifference: Int) {
             var difference = oldDifference
             if (difference < 0) {
@@ -230,7 +226,7 @@ class UnsignedBigInteger : Comparable<UnsignedBigInteger> {
      * Если число не влезает в диапазон Int, бросить ArithmeticException
      */
     fun toInt(): Int {
-        if (UnsignedBigInteger(number) > UnsignedBigInteger(Int.MAX_VALUE)) throw ArithmeticException()
+        if (this > UnsignedBigInteger(Int.MAX_VALUE)) throw ArithmeticException("Value too big")
         else {
             var result = 0
             for ((place, digit) in number.withIndex()) {
@@ -240,5 +236,8 @@ class UnsignedBigInteger : Comparable<UnsignedBigInteger> {
         }
 
     }
+
+    override fun hashCode(): Int = number.hashCode()
 }
+
 
