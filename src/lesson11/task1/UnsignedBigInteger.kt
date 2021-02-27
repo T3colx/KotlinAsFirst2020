@@ -159,7 +159,7 @@ class UnsignedBigInteger : Comparable<UnsignedBigInteger> {
         var tmpNum = UnsignedBigInteger(mutableListOf())
         var index = numerator.size - 1
         val resultNumber = mutableListOf<Int>()
-
+        if (denominator == UnsignedBigInteger(0)) throw ArithmeticException("Cannot divide by 0")
         while (index >= 0) {
             var counter = 0
             while (tmpNum <= denominator && index != -1) {
