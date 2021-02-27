@@ -25,7 +25,7 @@ class UnsignedBigInteger : Comparable<UnsignedBigInteger> {
     var number = mutableListOf<Int>()
 
     constructor(s: String) {
-        if (s.matches(Regex("""^[0-9]+$"""))) {
+        if (s.matches(Regex("""^\d+$"""))) {
             for (index in s.length - 1 downTo 0) number.add(getNumericValue(s[index]))
         } else throw ArithmeticException("Not a number")
     }
